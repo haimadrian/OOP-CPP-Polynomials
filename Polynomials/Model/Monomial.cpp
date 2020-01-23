@@ -4,7 +4,7 @@
 
 #include <stdexcept>
 #include "Monomial.h"
-#include "StringUtils.h"
+#include "..\\StringUtils.h"
 #include <cmath>
 
 int Monomial::monomialObjectsCount = 0;

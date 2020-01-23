@@ -4,7 +4,7 @@
 
 #include <iostream>
 #include "Polynomial.h"
-#include "StringUtils.h"
+#include "..\\StringUtils.h"
 
 static const char POLY_INPUT_END = ',';
 

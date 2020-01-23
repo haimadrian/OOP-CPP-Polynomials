@@ -207,8 +207,8 @@
     <ClInclude Include="DialogLayoutManager.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="ICloneable.h" />
-    <ClInclude Include="Monomial.h" />
-    <ClInclude Include="Polynomial.h" />
+    <ClInclude Include="Model\Monomial.h" />
+    <ClInclude Include="Model\Polynomial.h" />
     <ClInclude Include="Polynomials.h" />
     <ClInclude Include="PolynomialsApplication.h" />
     <ClInclude Include="PolynomialsDlg.h" />
@@ -231,8 +231,8 @@
     <ClCompile Include="Actions\SaveAction.cpp" />
     <ClCompile Include="Actions\SubAction.cpp" />
     <ClCompile Include="DialogLayoutManager.cpp" />
-    <ClCompile Include="Monomial.cpp" />
-    <ClCompile Include="Polynomial.cpp" />
+    <ClCompile Include="Model\Monomial.cpp" />
+    <ClCompile Include="Model\Polynomial.cpp" />
     <ClCompile Include="Polynomials.cpp" />
     <ClCompile Include="PolynomialsApplication.cpp" />
     <ClCompile Include="PolynomialsDlg.cpp" />
