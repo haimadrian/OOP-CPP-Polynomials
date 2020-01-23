@@ -1,0 +1,24 @@
+#pragma once
+#pragma warning( disable : 4290 ) // Disables the noexcept warning, so we can define specific exception
+
+#ifndef POLYNOMIALS_ADDACTION_H
+#define POLYNOMIALS_ADDACTION_H
+
+#include "IAction.h"
+#include "ActionContext.h"
+
+class AddAction : public IEditAction
+{
+private:
+	ActionContext actionContext;
+
+protected:
+	IAction * clone();
+
+public:
+	void execute(const ActionContext & context) throw(ExecuteActionException);
+	void undo();
+	void redo();
+};
+
+#endif
