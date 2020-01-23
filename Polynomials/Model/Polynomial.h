@@ -6,8 +6,9 @@
 #define POLYNOMIALS_POLYNOMIAL_H
 
 #include "Monomial.h"
+#include "..\\Utils\\IPrintable.h"
 
-class Polynomial {
+class Polynomial : public IPrintable {
 private:
     // Work with doubly list node to ease deletion.
     typedef struct MonomNode {
@@ -22,13 +23,15 @@ private:
 
     // Helper method to perform addition and delete if 0.
     void doAddToNode(MonomNode *monomialNode, const Monomial &monomial);
+protected:
+	void write(std::ostream & out) const;
+	void read(std::istream & in);
 public:
     Polynomial();
     Polynomial(const Polynomial &polynomial);
     ~Polynomial();
     void add(const Monomial & monomial);
     void clear();
-    void print() const;
 
     Polynomial& operator+=(const Polynomial &another);
     Polynomial& operator+=(const Monomial &monomial);
@@ -43,6 +46,12 @@ public:
     Polynomial& operator*=(const Monomial &monomial);
     Polynomial operator*(const Polynomial &another) const;
     Polynomial operator*(const Monomial &monomial) const;
+	Polynomial& operator/=(const Polynomial &another);
+	Polynomial& operator/=(const Monomial &monomial);
+	Polynomial operator/(const Polynomial &another) const;
+	Polynomial operator/(const Monomial &monomial) const;
+	Polynomial& operator^=(const Monomial &monomial);
+	Polynomial operator^(const Monomial &monomial) const;
 
     // Return const polynomial so we will let users to append '=' as much as they want.
     const Polynomial& operator=(const Polynomial &polynomial);
@@ -65,21 +74,6 @@ public:
     friend Polynomial operator-(const Monomial &monomial, const Polynomial &polynomial);
     friend Polynomial operator+(const Monomial &monomial, const Polynomial &polynomial);
     friend Polynomial operator*(const Monomial &monomial, const Polynomial &polynomial);
-    friend std::ostream &operator<<(std::ostream &out, const Polynomial &polynomial);
-    friend std::istream &operator>>(std::istream &in, Polynomial &polynomial);
-
-	static bool isOperator(int character) {
-		switch (character) {
-		case '+':
-		case '-':
-		case '*':
-		case '/':
-		case '^':
-			return true;
-		}
-
-		return false;
-	}
 };
 
 

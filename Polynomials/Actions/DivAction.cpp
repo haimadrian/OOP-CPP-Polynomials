@@ -4,19 +4,13 @@
 IAction * DivAction::clone()
 {
 	DivAction * result = new DivAction();
-	result->actionContext = this->actionContext;
+	clonePartial(result);
 	return result;
 }
 
-void DivAction::execute(const ActionContext & context)
-{
-	actionContext = context;
-}
+Polynomial DivAction::doExecute() {
+	Polynomial left = getLeftPoly();
+	Polynomial right = getRightPoly();
 
-void DivAction::undo()
-{
-}
-
-void DivAction::redo()
-{
+	return left / right;
 }

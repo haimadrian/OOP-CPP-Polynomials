@@ -6,8 +6,9 @@
 #define POLYNOMIALS_MONOMIAL_H
 
 #include <iostream>
+#include "..\\Utils\\IPrintable.h"
 
-class Monomial {
+class Monomial : public IPrintable {
 private:
     // Define static constants for default values of coefficient and degree
     static const int DEFAULT_COEFFICIENT = 0;
@@ -17,6 +18,9 @@ private:
 
     double coefficient;
     int degree;
+protected:
+	void write(std::ostream & out) const;
+	void read(std::istream & in);
 public:
     Monomial(double coefficient = (double)DEFAULT_COEFFICIENT, int degree = DEFAULT_DEGREE);
     Monomial(const Monomial &another); // Explicitly define copy ctor so we will update objects count on copy.
@@ -28,7 +32,6 @@ public:
     double getCoefficient() const;
     double &getCoefficientProperty(); // Expose by ref so we do not have to declare Polynomial as a friend.
 
-    void print() const;
     bool add(const Monomial &monomial);
 
     Monomial& operator+=(const Monomial &another);
@@ -38,6 +41,10 @@ public:
     Monomial operator-() const;
     Monomial& operator*=(const Monomial &another);
     Monomial operator*(const Monomial &another) const;
+	Monomial& operator/=(const Monomial &another);
+	Monomial operator/(const Monomial &another) const;
+	Monomial& operator^=(const Monomial &another);
+	Monomial operator^(const Monomial &another) const;
 
     // Return const monomial so we will let users to append '=' as much as they want.
     const Monomial& operator=(const Monomial &monomial);
@@ -47,9 +54,6 @@ public:
 
     bool operator==(const Monomial &another) const;
     bool operator!=(const Monomial &another) const;
-
-    friend std::ostream &operator<<(std::ostream &out, const Monomial &monomial);
-    friend std::istream &operator>>(std::istream &in, Monomial &monomial);
 };
 
 

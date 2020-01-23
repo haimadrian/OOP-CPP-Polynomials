@@ -11,7 +11,7 @@
 #include "..\\framework.h" 
 #include "..\\Model\\Polynomial.h"
 #include "..\\Model\\Monomial.h"
-#include "..\\ICloneable.h"
+#include "..\\Utils\\ICloneable.h"
 
 class ActionExecutor;
 

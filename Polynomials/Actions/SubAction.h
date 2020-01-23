@@ -4,22 +4,15 @@
 #ifndef POLYNOMIALS_SUBACTION_H
 #define POLYNOMIALS_SUBACTION_H
 
-#include "IAction.h"
-#include "ActionContext.h"
+#include "AbstractArithmeticAction.h"
 
-class SubAction : public IEditAction
+class SubAction : public AbstractArithmeticAction
 {
-private:
-	ActionContext actionContext;
-
 protected:
 	IAction * clone();
-
-public:
-	SubAction() = default;
-	void execute(const ActionContext & context) throw(ExecuteActionException);
-	void undo();
-	void redo();
+	Polynomial doExecute();
+	std::wstring getActionName() { return L"Sub"; }
+	char getActionOperator() { return '-'; }
 };
 
 #endif

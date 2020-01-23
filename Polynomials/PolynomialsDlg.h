@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include "framework.h"
 #include "DialogLayoutManager.h"
 
 // CPolynomialsDlg dialog
@@ -27,6 +28,7 @@ private:
 	void setUnsavedChangesState();
 	void removeUnsavedChangesState();
 	void freeLayoutManager();
+	bool canExecuteArithmeticAction();
 
 // Implementation
 protected:
@@ -57,6 +59,7 @@ protected:
 	void OnHelpAbout();
 public:
 	void logMessage(const std::wstring & message);
+	void logMessageWithInputText(const std::wstring & message);
 
 	afx_msg void OnClose();
 	afx_msg void OnSize(UINT nType, int cx, int cy);
@@ -77,8 +80,7 @@ public:
 	afx_msg void OnBnClickedMfcbuttonmul();
 	afx_msg void OnBnClickedMfcbuttondiv();
 	afx_msg void OnBnClickedMfcbuttonpow();
-	afx_msg void OnBnClickedMfcbuttonleftparentheses();
-	afx_msg void OnBnClickedMfcbuttonrightparentheses();
+	afx_msg void OnBnClickedMfcbuttondot();
 	afx_msg void OnBnClickedMfcbuttondel();
 	afx_msg void OnBnClickedMfcbuttonclear();
 	afx_msg void OnBnClickedMfcbuttoneq();

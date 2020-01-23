@@ -11,6 +11,7 @@
 #define IDR_MENU1                       132
 #define IDR_MENU2                       133
 #define IDR_ACCELERATOR1                135
+#define IDD_SELECT_POLY                 136
 #define IDC_PolynomialsList             1000
 #define IDC_MFCMENUBUTTON1              1004
 #define IDC_POLYNOMIALS_LABEL           1006
@@ -44,6 +45,11 @@
 #define IDC_MFCBUTTONINSERT             1033
 #define IDC_MFCBUTTONREMOVE             1034
 #define IDC_RADIO1                      1035
+#define IDC_EDITLEFTPOLY                1039
+#define IDC_EDITRIGHTPOLY               1040
+#define IDC_SPINLEFTPOLY                1041
+#define IDC_SPINLEFTPOLY2               1042
+#define IDC_SPINRIGHTPOLY               1042
 #define ID_FILE_OPEN32771               32771
 #define ID_FILE_SAVE32772               32772
 #define ID_FILE_QUIT                    32773
@@ -63,9 +69,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        136
+#define _APS_NEXT_RESOURCE_VALUE        138
 #define _APS_NEXT_COMMAND_VALUE         32788
-#define _APS_NEXT_CONTROL_VALUE         1036
+#define _APS_NEXT_CONTROL_VALUE         1042
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

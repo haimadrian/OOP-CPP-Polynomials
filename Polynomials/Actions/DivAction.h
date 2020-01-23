@@ -4,21 +4,15 @@
 #ifndef POLYNOMIALS_DIVACTION_H
 #define POLYNOMIALS_DIVACTION_H
 
-#include "IAction.h"
-#include "ActionContext.h"
+#include "AbstractArithmeticAction.h"
 
-class DivAction : public IEditAction
+class DivAction : public AbstractArithmeticAction
 {
-private:
-	ActionContext actionContext;
-
 protected:
 	IAction * clone();
-
-public:
-	void execute(const ActionContext & context) throw(ExecuteActionException);
-	void undo();
-	void redo();
+	Polynomial doExecute();
+	std::wstring getActionName() { return L"Div"; }
+	char getActionOperator() { return '/'; }
 };
 
 #endif

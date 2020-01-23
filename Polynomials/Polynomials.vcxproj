@@ -189,6 +189,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AboutDlg.h" />
+    <ClInclude Include="Actions\AbstractArithmeticAction.h" />
     <ClInclude Include="Actions\AbstractInputTextKeeperAction.h" />
     <ClInclude Include="Actions\ActionContext.h" />
     <ClInclude Include="Actions\ActionExecutor.h" />
@@ -206,18 +207,22 @@
     <ClInclude Include="Actions\SubAction.h" />
     <ClInclude Include="DialogLayoutManager.h" />
     <ClInclude Include="framework.h" />
-    <ClInclude Include="ICloneable.h" />
+    <ClInclude Include="PolySelectionDialog.h" />
+    <ClInclude Include="Utils\ICloneable.h" />
     <ClInclude Include="Model\Monomial.h" />
     <ClInclude Include="Model\Polynomial.h" />
     <ClInclude Include="Polynomials.h" />
     <ClInclude Include="PolynomialsApplication.h" />
     <ClInclude Include="PolynomialsDlg.h" />
+    <ClInclude Include="Utils\IPrintable.h" />
+    <ClInclude Include="Utils\PolynomialUtils.h" />
     <ClInclude Include="Resource.h" />
-    <ClInclude Include="StringUtils.h" />
+    <ClInclude Include="Utils\StringUtils.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AboutDlg.cpp" />
+    <ClCompile Include="Actions\AbstractArithmeticAction.cpp" />
     <ClCompile Include="Actions\ActionContext.cpp" />
     <ClCompile Include="Actions\ActionExecutor.cpp" />
     <ClCompile Include="Actions\AddAction.cpp" />
@@ -236,6 +241,7 @@
     <ClCompile Include="Polynomials.cpp" />
     <ClCompile Include="PolynomialsApplication.cpp" />
     <ClCompile Include="PolynomialsDlg.cpp" />
+    <ClCompile Include="PolySelectionDialog.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Polynomials.rc" />

@@ -4,19 +4,13 @@
 IAction * MulAction::clone()
 {
 	MulAction * result = new MulAction();
-	result->actionContext = this->actionContext;
+	clonePartial(result);
 	return result;
 }
 
-void MulAction::execute(const ActionContext & context)
-{
-	actionContext = context;
-}
+Polynomial MulAction::doExecute() {
+	Polynomial left = getLeftPoly();
+	Polynomial right = getRightPoly();
 
-void MulAction::undo()
-{
-}
-
-void MulAction::redo()
-{
+	return left * right;
 }

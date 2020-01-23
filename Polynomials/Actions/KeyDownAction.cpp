@@ -1,7 +1,8 @@
 
 #include "KeyDownAction.h"
 #include "..\\PolynomialsApplication.h" 
-#include "..\\StringUtils.h" 
+#include "..\\Utils\\StringUtils.h"
+#include "..\\Utils\\PolynomialUtils.h"
 
 IAction * KeyDownAction::clone()
 {
@@ -20,7 +21,7 @@ void KeyDownAction::executeBasedOnExistingData(CEdit * inputEdit)
 	// If it is not the backspace key or delete key, append text.
 	if ((virtualKey != VK_BACK) && (virtualKey != VK_DELETE)) {
 		// Make sure it is a digit or acceptable sign
-		if (isdigit(ascii) || Polynomial::isOperator(ascii) || (tolower(ascii) == 'x') || (ascii == ' ') || (ascii == '(') || (ascii == ')')) {
+		if (isdigit(ascii) || PolynomialUtils::isOperator(ascii) || (tolower(ascii) == 'x') || (ascii == ' ') || (ascii == '.')) {
 			text = new WCHAR[2]{ (WCHAR)tolower(ascii), '\0' };
 
 			// In order to avoid of replacing text with single input char in one action, handle selection
@@ -34,12 +35,12 @@ void KeyDownAction::executeBasedOnExistingData(CEdit * inputEdit)
 			inputEdit->ReplaceSel(text);
 		}
 		else {
-			throw ExecuteActionException("Illegal input");
+			throw ExecuteActionException(std::string("Illegal input:   '") + (char)ascii + '\'');
 		}
 	}
 	else {
 		if ((caretStart == 0) && (caretEnd == 0)) {
-			throw ExecuteActionException("Nothing to delete");
+			throw ExecuteActionException("Nothing to delete.");
 		}
 
 		// If there is nothing selected, select single char

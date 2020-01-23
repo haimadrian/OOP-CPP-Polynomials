@@ -4,19 +4,13 @@
 IAction * AddAction::clone()
 {
 	AddAction * result = new AddAction();
-	result->actionContext = this->actionContext;
+	clonePartial(result);
 	return result;
 }
 
-void AddAction::execute(const ActionContext & context)
-{
-	actionContext = context;
-}
+Polynomial AddAction::doExecute() {
+	Polynomial left = getLeftPoly();
+	Polynomial right = getRightPoly();
 
-void AddAction::undo()
-{
-}
-
-void AddAction::redo()
-{
+	return left + right;
 }

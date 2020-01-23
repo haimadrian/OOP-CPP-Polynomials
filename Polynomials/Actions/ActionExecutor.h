@@ -19,7 +19,7 @@ public:
 class ActionExecutor
 {
 private:
-	static const int MAX_ACTIONS = 1000;
+	static const int MAX_ACTIONS = 2048;
 	std::deque <IAction *> *actions;
 	std::deque <IAction *> *undoneActions;
 

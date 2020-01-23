@@ -4,7 +4,8 @@
 
 #include <iostream>
 #include "Polynomial.h"
-#include "..\\StringUtils.h"
+#include "..\\Utils\\StringUtils.h"
+#include "..\\Utils\\PolynomialUtils.h"
 
 static const char POLY_INPUT_END = ',';
 
@@ -111,10 +112,6 @@ void Polynomial::clear() {
     head = nullptr;
 }
 
-void Polynomial::print() const {
-    std::cout << *this;
-}
-
 Polynomial &Polynomial::operator+=(const Polynomial &another) {
     MonomNode *iter = another.head;
 
@@ -199,6 +196,76 @@ Polynomial Polynomial::operator*(const Polynomial &another) const {
 
 Polynomial Polynomial::operator*(const Monomial &monomial) const {
     return (Polynomial(*this) *= (Polynomial() += monomial));
+}
+
+Polynomial &Polynomial::operator/=(const Monomial &monomial) {
+	if (monomial.getCoefficient() == 0) {
+		throw std::overflow_error("Overflow Error: Cannot divide by zero.");
+	}
+
+	// Save a copy of ourselves, cause the result is going to override us.
+	Polynomial temp(*this);
+	MonomNode *ourIter;
+
+	// Clear ourselves, so the result can be safely added to us.
+	clear();
+
+	// In case one of them is empty, result will be empty.
+	if (temp.head != nullptr) {
+		for (ourIter = temp.head; ourIter != nullptr; ourIter = ourIter->next) {
+			*this += (*(ourIter->monomial) / monomial);
+		}
+	}
+
+	return *this;
+}
+
+Polynomial &Polynomial::operator/=(const Polynomial &another) {
+	if (another.head == nullptr) {
+		throw std::overflow_error("Overflow Error: Cannot divide by zero.");
+	}
+
+	if (another.head->next != nullptr) {
+		throw std::invalid_argument("Illegal Operation: Cannot divide by extended polynomial. Division can done by single monomial only.");
+	}
+
+	(*this) /= *(another.head->monomial);
+
+	return *this;
+}
+
+Polynomial Polynomial::operator/(const Monomial &monomial) const {
+	return (Polynomial(*this) /= monomial);
+}
+
+Polynomial Polynomial::operator/(const Polynomial &another) const {
+	return (Polynomial(*this) /= another);
+}
+
+Polynomial &Polynomial::operator^=(const Monomial &monomial) {
+	if (monomial.getDegree() > 0) {
+		throw std::overflow_error("Overflow Error: Cannot power by x, only by a number.");
+	}
+
+	// Save a copy of ourselves, cause the result is going to override us.
+	Polynomial temp(*this);
+	MonomNode *ourIter;
+
+	// Clear ourselves, so the result can be safely added to us.
+	clear();
+
+	// In case one of them is empty, result will be empty.
+	if (temp.head != nullptr) {
+		for (ourIter = temp.head; ourIter != nullptr; ourIter = ourIter->next) {
+			*this += (*(ourIter->monomial) ^ monomial);
+		}
+	}
+
+	return *this;
+}
+
+Polynomial Polynomial::operator^(const Monomial &monomial) const {
+	return (Polynomial(*this) ^= monomial);
 }
 
 const Polynomial &Polynomial::operator=(const Polynomial &polynomial) {
@@ -304,52 +371,67 @@ bool operator!=(const Monomial &monomial, const Polynomial &polynomial) {
     return polynomial != monomial;
 }
 
-std::ostream &operator<<(std::ostream &out, const Polynomial &polynomial) {
-    if (polynomial.head == nullptr) {
-        out << '0';
-    } else {
-        Polynomial::MonomNode *iter = polynomial.head;
+void Polynomial::write(std::ostream & out) const {
+	if (this->head == nullptr) {
+		out << '0';
+	}
+	else {
+		Polynomial::MonomNode *iter = this->head;
 
-        // Print first element.
+		// Print first element.
 		if ((*(iter->monomial)).getCoefficient() < 0) {
 			out << "-";
 		}
-        out << *(iter->monomial);
+		out << *(iter->monomial);
 
 		// Now print the rest
-        for (iter = iter->next; iter != nullptr; iter = iter->next) {
+		for (iter = iter->next; iter != nullptr; iter = iter->next) {
 			out << " ";
 
-            // Append '+' only. A minus is appended by monomial's print.
-            if ((*(iter->monomial)).getCoefficient() > 0) {
-                out << "+";
-            } else if ((*(iter->monomial)).getCoefficient() < 0) {
+			// Append '+' only. A minus is appended by monomial's print.
+			if ((*(iter->monomial)).getCoefficient() > 0) {
+				out << "+";
+			}
+			else if ((*(iter->monomial)).getCoefficient() < 0) {
 				out << "-";
 			}
 
-            out << " " << *(iter->monomial);
-        }
-    }
-
-    return out;
+			out << " " << *(iter->monomial);
+		}
+	}
 }
 
-std::istream &operator>>(std::istream &in, Polynomial &polynomial) {
-    // Make sure polynomial is empty, to let users re-use the same polynomial references.
-    polynomial.clear();
+void Polynomial::read(std::istream & in) {
+	// Make sure polynomial is empty, to let users re-use the same polynomial references.
+	this->clear();
 
-    int c;
-    while (((c = StringUtils::peekIgnoringWhitespace(in)) != EOF) && (c != std::char_traits<char>::to_int_type(POLY_INPUT_END))) {
-        Monomial inputMonomial;
-        in >> inputMonomial;
-        polynomial += inputMonomial;
-    }
+	int c;
+	while (((c = StringUtils::peekIgnoringWhitespace(in)) != EOF) &&
+		(c != std::char_traits<char>::to_int_type(POLY_INPUT_END)) &&
+		(c != std::char_traits<char>::to_int_type('\n'))) {
+		Monomial inputMonomial;
+		in >> inputMonomial;
+		(*this) += inputMonomial;
 
-    // Remove comma and the enter.
-    if (c != EOF) {
-        in.get();
-        while ((in.peek() != EOF) && isspace(in.peek()) && (in.get() != std::char_traits<char>::to_int_type('\n')));
-    }
+		if (PolynomialUtils::isOperator(StringUtils::peekIgnoringWhitespace(in))) {
+			int operatorChar = StringUtils::getIgnoringWhitespace(in);
 
-    return in;
+			Monomial otherMonom;
+			in >> otherMonom;
+
+			switch (operatorChar) {
+			case '+': (*this) += otherMonom; break;
+			case '-': (*this) -= otherMonom; break;
+			case '*': (*this) *= otherMonom; break;
+			case '/': (*this) /= otherMonom; break;
+			case '^': (*this) ^= otherMonom; break;
+			}
+		}
+	}
+
+	// Remove comma and the enter.
+	if (c != EOF) {
+		in.get();
+		while ((in.peek() != EOF) && isspace(in.peek()) && (in.get() != std::char_traits<char>::to_int_type('\n')));
+	}
 }

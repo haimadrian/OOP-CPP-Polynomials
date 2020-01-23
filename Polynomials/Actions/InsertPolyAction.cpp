@@ -23,6 +23,8 @@ void InsertPolyAction::execute(const ActionContext & context)
 	// Refresh the width. We do this in case there is a vertical scrollbar created, that adds some 
 	// pixels to the width of the list, which results in a horizontal scrollbar.
 	list->SetColumnWidth(0, LVSCW_AUTOSIZE_USEHEADER);
+
+	PolynomialsApplication::getInstance().getMainWindow()->logMessageWithInputText(L"Inserted polynomial: ");
 }
 
 void InsertPolyAction::undo()
@@ -35,6 +37,8 @@ void InsertPolyAction::undo()
 	list->SetColumnWidth(0, LVSCW_AUTOSIZE_USEHEADER);
 
 	EvaluateInputAction::undo();
+
+	PolynomialsApplication::getInstance().getMainWindow()->logMessage(L"Undo of InsertPolynomialAction completed.");
 }
 
 void InsertPolyAction::redo()
@@ -47,4 +51,6 @@ void InsertPolyAction::redo()
 	// Refresh the width. We do this in case there is a vertical scrollbar created, that adds some 
 	// pixels to the width of the list, which results in a horizontal scrollbar.
 	list->SetColumnWidth(0, LVSCW_AUTOSIZE_USEHEADER);
+
+	PolynomialsApplication::getInstance().getMainWindow()->logMessageWithInputText(L"Redo of InsertPolynomialAction: ");
 }

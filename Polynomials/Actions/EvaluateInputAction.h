@@ -17,9 +17,11 @@ private:
 	void doExecute(CEdit * input);
 
 protected:
+	bool shouldLog;
 	IAction * clone();
 
 public:
+	EvaluateInputAction(bool shouldLog = true):shouldLog(shouldLog){}
 	void execute(const ActionContext & context) throw(ExecuteActionException);
 	void undo();
 	void redo();
@@ -38,6 +40,8 @@ public:
 
 		Polynomial p;
 		in >> p;
+
+		delete txt;
 
 		return p;
 	}

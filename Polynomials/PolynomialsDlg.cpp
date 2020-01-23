@@ -12,13 +12,24 @@
 #include "PolynomialsApplication.h"
 #include "Actions\\ActionContext.h"
 #include "Actions\\AbstractInputTextKeeperAction.h"
-#include "Actions\\EvaluateInputAction.h"
-#include "StringUtils.h"
-//#include "Polynomials.rc"
+#include "Utils\\StringUtils.h"
+#include "PolySelectionDialog.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
+
+
+void showGeneralErrorToUser() {
+	AfxMessageBox(L"Something went wrong... Sorry", MB_ICONERROR | MB_OK);
+}
+
+void showExceptionMessageToUser(std::exception & e) {
+	WCHAR * text = StringUtils::charToWCHAR(e.what());
+	AfxMessageBox(text, MB_ICONERROR | MB_OK);
+	delete text;
+}
+
 
 // CPolynomialsDlg dialog
 
@@ -81,8 +92,7 @@ BEGIN_MESSAGE_MAP(CPolynomialsDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_MFCBUTTONMUL, &CPolynomialsDlg::OnBnClickedMfcbuttonmul)
 	ON_BN_CLICKED(IDC_MFCBUTTONDIV, &CPolynomialsDlg::OnBnClickedMfcbuttondiv)
 	ON_BN_CLICKED(IDC_MFCBUTTONPOW, &CPolynomialsDlg::OnBnClickedMfcbuttonpow)
-	ON_BN_CLICKED(IDC_MFCBUTTONLEFTPARENTHESES, &CPolynomialsDlg::OnBnClickedMfcbuttonleftparentheses)
-	ON_BN_CLICKED(IDC_MFCBUTTONRIGHTPARENTHESES, &CPolynomialsDlg::OnBnClickedMfcbuttonrightparentheses)
+	ON_BN_CLICKED(IDC_MFCBUTTONDOT, &CPolynomialsDlg::OnBnClickedMfcbuttondot)
 	ON_BN_CLICKED(IDC_MFCBUTTONDEL, &CPolynomialsDlg::OnBnClickedMfcbuttondel)
 	ON_BN_CLICKED(IDC_MFCBUTTONCLEAR, &CPolynomialsDlg::OnBnClickedMfcbuttonclear)
 	ON_BN_CLICKED(IDC_MFCBUTTONEQ, &CPolynomialsDlg::OnBnClickedMfcbuttoneq)
@@ -132,8 +142,6 @@ BOOL CPolynomialsDlg::OnInitDialog()
 		m_layoutManager->SetControl(GetDlgItem(IDC_MFCBUTTONEQ), DialogLayoutManager::ANCHOR_RIGHT | DialogLayoutManager::ANCHOR_TOP);
 		m_layoutManager->SetControl(GetDlgItem(IDC_MFCBUTTONDEL), DialogLayoutManager::ANCHOR_RIGHT | DialogLayoutManager::ANCHOR_TOP);
 		m_layoutManager->SetControl(GetDlgItem(IDC_MFCBUTTONCLEAR), DialogLayoutManager::ANCHOR_RIGHT | DialogLayoutManager::ANCHOR_TOP);
-		m_layoutManager->SetControl(GetDlgItem(IDC_MFCBUTTONLEFTPARENTHESES), DialogLayoutManager::ANCHOR_RIGHT | DialogLayoutManager::ANCHOR_TOP);
-		m_layoutManager->SetControl(GetDlgItem(IDC_MFCBUTTONRIGHTPARENTHESES), DialogLayoutManager::ANCHOR_RIGHT | DialogLayoutManager::ANCHOR_TOP);
 
 		m_layoutManager->SetControl(GetDlgItem(IDC_CONSOLE), DialogLayoutManager::ANCHOR_LEFT | DialogLayoutManager::ANCHOR_RIGHT | DialogLayoutManager::ANCHOR_TOP | DialogLayoutManager::ANCHOR_BOTTOM);
 
@@ -190,6 +198,14 @@ void CPolynomialsDlg::logMessage(const std::wstring & message)
 	edit->ReplaceSel((timeStr + message + L"\r\n").c_str());
 }
 
+void CPolynomialsDlg::logMessageWithInputText(const std::wstring & message)
+{
+	CEdit * edit = (CEdit *)GetDlgItem(IDC_INPUT_TEXT);
+	WCHAR * txt = AbstractInputTextKeeperAction::getWholeText(edit);
+	logMessage(message + std::wstring(txt));
+	delete txt;
+}
+
 BOOL isNavigationKey(WPARAM key) {
 	switch (key) {
 		case VK_LEFT:
@@ -222,8 +238,11 @@ BOOL CPolynomialsDlg::PreTranslateMessage(MSG* pMsg)
 		{
 			// Do not redirect event if sender is the console or list control, to let user copy text.
 			if ((pMsg->hwnd != GetDlgItem(IDC_CONSOLE)->GetSafeHwnd()) && (pMsg->hwnd != GetDlgItem(IDC_PolynomialsList)->GetSafeHwnd())) {
+				if (pMsg->wParam == VK_RETURN) {
+					OnBnClickedMfcbuttoneq();
+				}
 				// If it is a navigation key, and current handle is the input edit, redirect it
-				if (isNavigationKey(pMsg->wParam)) {
+				else if (isNavigationKey(pMsg->wParam)) {
 					redirectMessage(GetSafeHwnd(), pMsg);
 				}
 				else {
@@ -232,9 +251,7 @@ BOOL CPolynomialsDlg::PreTranslateMessage(MSG* pMsg)
 						PolynomialsApplication::getInstance().getActionExecutor()->execute(Action::KeyDown, context);
 					}
 					catch (ExecuteActionException & e) {
-						WCHAR * text = StringUtils::charToWCHAR(e.what());
-						AfxMessageBox(text);
-						delete text;
+						showExceptionMessageToUser(e);
 					}
 				}
 
@@ -247,7 +264,7 @@ BOOL CPolynomialsDlg::PreTranslateMessage(MSG* pMsg)
 		}
 	}
 	catch (...) {
-		AfxMessageBox(L"Something went wrong... Sorry");
+		showGeneralErrorToUser();
 	}
 
 	return CDialogEx::PreTranslateMessage(pMsg);
@@ -315,7 +332,7 @@ void CPolynomialsDlg::OnFileOpen() {
 	try {
 	}
 	catch (...) {
-		AfxMessageBox(L"Something went wrong... Sorry");
+		showGeneralErrorToUser();
 	}
 }
 
@@ -324,7 +341,7 @@ void CPolynomialsDlg::OnFileSave() {
 		removeUnsavedChangesState();
 	}
 	catch (...) {
-		AfxMessageBox(L"Something went wrong... Sorry");
+		showGeneralErrorToUser();
 	}
 }
 
@@ -336,14 +353,13 @@ void CPolynomialsDlg::OnEditUndo() {
 	try {
 		if (PolynomialsApplication::getInstance().getActionExecutor()->canUndo()) {
 			PolynomialsApplication::getInstance().getActionExecutor()->undo();
-			logMessage(L"Undo of last action completed.");
 		}
 		else {
 			logMessage(L"There is nothing to undo.");
 		}
 	}
 	catch (...) {
-		AfxMessageBox(L"Something went wrong... Sorry");
+		showGeneralErrorToUser();
 	}
 }
 
@@ -351,46 +367,127 @@ void CPolynomialsDlg::OnEditRedo() {
 	try {
 		if (PolynomialsApplication::getInstance().getActionExecutor()->canRedo()) {
 			PolynomialsApplication::getInstance().getActionExecutor()->redo();
-			logMessage(L"Redo of last undone action completed.");
 		}
 		else {
 			logMessage(L"There is nothing to redo.");
 		}
 	}
 	catch (...) {
-		AfxMessageBox(L"Something went wrong... Sorry");
+		showGeneralErrorToUser();
 	}
 }
 
+bool CPolynomialsDlg::canExecuteArithmeticAction() {
+	bool isPossible = ((CListCtrl *)GetDlgItem(IDC_PolynomialsList))->GetItemCount() > 0;
+
+	if (!isPossible) {
+		AfxMessageBox(L"Unable to execute arithmetic actions. Insert polynomials to the list first.", MB_ICONASTERISK | MB_OK);
+	}
+
+	return isPossible;
+}
+
 void CPolynomialsDlg::OnEditAdd() {
+	if (!canExecuteArithmeticAction()) {
+		return;
+	}
+
 	try {
+		PolySelectionDialog dlg(1, ((CListCtrl *)GetDlgItem(IDC_PolynomialsList))->GetItemCount(), L"Add", this);
+		INT_PTR response = dlg.DoModal();
+		if (response == IDOK)
+		{
+			int left = dlg.getLeftPolyIndex() - 1;
+			int right = dlg.getRightPolyIndex() - 1;
+
+			try {
+				PolynomialsApplication::getInstance().getActionExecutor()->execute(Action::Add, ActionContext(left, right));
+			}
+			catch (ExecuteActionException & e) {
+				showExceptionMessageToUser(e);
+			}
+		}
 	}
 	catch (...) {
-		AfxMessageBox(L"Something went wrong... Sorry");
+		showGeneralErrorToUser();
 	}
 }
 
 void CPolynomialsDlg::OnEditSub() {
+	if (!canExecuteArithmeticAction()) {
+		return;
+	}
+
 	try {
+		PolySelectionDialog dlg(1, ((CListCtrl *)GetDlgItem(IDC_PolynomialsList))->GetItemCount(), L"Sub", this);
+		INT_PTR response = dlg.DoModal();
+		if (response == IDOK)
+		{
+			int left = dlg.getLeftPolyIndex() - 1;
+			int right = dlg.getRightPolyIndex() - 1;
+
+			try {
+				PolynomialsApplication::getInstance().getActionExecutor()->execute(Action::Sub, ActionContext(left, right));
+			}
+			catch (ExecuteActionException & e) {
+				showExceptionMessageToUser(e);
+			}
+		}
 	}
 	catch (...) {
-		AfxMessageBox(L"Something went wrong... Sorry");
+		showGeneralErrorToUser();
 	}
 }
 
 void CPolynomialsDlg::OnEditMul() {
+	if (!canExecuteArithmeticAction()) {
+		return;
+	}
+
 	try {
+		PolySelectionDialog dlg(1, ((CListCtrl *)GetDlgItem(IDC_PolynomialsList))->GetItemCount(), L"Mul", this);
+		INT_PTR response = dlg.DoModal();
+		if (response == IDOK)
+		{
+			int left = dlg.getLeftPolyIndex() - 1;
+			int right = dlg.getRightPolyIndex() - 1;
+
+			try {
+				PolynomialsApplication::getInstance().getActionExecutor()->execute(Action::Mul, ActionContext(left, right));
+			}
+			catch (ExecuteActionException & e) {
+				showExceptionMessageToUser(e);
+			}
+		}
 	}
 	catch (...) {
-		AfxMessageBox(L"Something went wrong... Sorry");
+		showGeneralErrorToUser();
 	}
 }
 
 void CPolynomialsDlg::OnEditDiv() {
+	if (!canExecuteArithmeticAction()) {
+		return;
+	}
+
 	try {
+		PolySelectionDialog dlg(1, ((CListCtrl *)GetDlgItem(IDC_PolynomialsList))->GetItemCount(), L"Div", this);
+		INT_PTR response = dlg.DoModal();
+		if (response == IDOK)
+		{
+			int left = dlg.getLeftPolyIndex() - 1;
+			int right = dlg.getRightPolyIndex() - 1;
+
+			try {
+				PolynomialsApplication::getInstance().getActionExecutor()->execute(Action::Div, ActionContext(left, right));
+			}
+			catch (ExecuteActionException & e) {
+				showExceptionMessageToUser(e);
+			}
+		}
 	}
 	catch (...) {
-		AfxMessageBox(L"Something went wrong... Sorry");
+		showGeneralErrorToUser();
 	}
 }
 
@@ -405,7 +502,7 @@ void CPolynomialsDlg::OnClose()
 	// If there are unsaved changes, prompt to ask user if he wants to exit without saving.
 	if (PolynomialsApplication::getInstance().anyUnsavedChanges()) 
 	{
-		int answer = AfxMessageBox(L"There are unsaved changes. Are you sure you want to exit?", MB_YESNO);
+		int answer = AfxMessageBox(L"There are unsaved changes. Are you sure you want to exit?", MB_ICONEXCLAMATION | MB_YESNO);
 
 		if (answer == IDYES)
 		{
@@ -612,22 +709,12 @@ void CPolynomialsDlg::OnBnClickedMfcbuttonpow()
 }
 
 
-void CPolynomialsDlg::OnBnClickedMfcbuttonleftparentheses()
+void CPolynomialsDlg::OnBnClickedMfcbuttondot()
 {
 	MSG msg;
 	msg.hwnd = GetSafeHwnd();
 	msg.message = WM_KEYDOWN;
-	msg.wParam = '(';
-	PreTranslateMessage(&msg);
-}
-
-
-void CPolynomialsDlg::OnBnClickedMfcbuttonrightparentheses()
-{
-	MSG msg;
-	msg.hwnd = GetSafeHwnd();
-	msg.message = WM_KEYDOWN;
-	msg.wParam = ')';
+	msg.wParam = VK_DECIMAL;
 	PreTranslateMessage(&msg);
 }
 
@@ -653,31 +740,20 @@ void CPolynomialsDlg::OnBnClickedMfcbuttonclear()
 		OnBnClickedMfcbuttondel();
 	} 
 	catch (...) {
-		AfxMessageBox(L"Something went wrong... Sorry");
+		showGeneralErrorToUser();
 	}
 }
-
 
 void CPolynomialsDlg::OnBnClickedMfcbuttoneq()
 {
 	try {
 		PolynomialsApplication::getInstance().getActionExecutor()->execute(Action::Evaluate, ActionContext());
-	
-		CEdit * edit = (CEdit *)GetDlgItem(IDC_INPUT_TEXT);
-		logMessage(L"Evaluated polynomial: " + std::wstring(AbstractInputTextKeeperAction::getWholeText(edit)));
 	}
 	catch (ExecuteActionException & e) {
-		WCHAR * text = StringUtils::charToWCHAR(e.what());
-		AfxMessageBox(text);
-		delete text;
-	}
-	catch (std::invalid_argument & e) {
-		WCHAR * text = StringUtils::charToWCHAR(e.what());
-		AfxMessageBox(text);
-		delete text;
+		showExceptionMessageToUser(e);
 	}
 	catch (...) {
-		AfxMessageBox(L"Something went wrong... Sorry");
+		showGeneralErrorToUser();
 	}
 }
 
@@ -686,24 +762,13 @@ void CPolynomialsDlg::OnBnClickedMfcbuttoninsert()
 {
 	try {
 		PolynomialsApplication::getInstance().getActionExecutor()->execute(Action::InsertPoly, ActionContext());
-	
-		CEdit * edit = (CEdit *)GetDlgItem(IDC_INPUT_TEXT);
-		logMessage(L"Inserted polynomial: " + std::wstring(AbstractInputTextKeeperAction::getWholeText(edit)));
-
 		setUnsavedChangesState();
 	}
 	catch (ExecuteActionException & e) {
-		WCHAR * text = StringUtils::charToWCHAR(e.what());
-		AfxMessageBox(text);
-		delete text;
-	}
-	catch (std::invalid_argument & e) {
-		WCHAR * text = StringUtils::charToWCHAR(e.what());
-		AfxMessageBox(text);
-		delete text;
+		showExceptionMessageToUser(e);
 	}
 	catch (...) {
-		AfxMessageBox(L"Something went wrong... Sorry");
+		showGeneralErrorToUser();
 	}
 }
 
@@ -715,31 +780,19 @@ void CPolynomialsDlg::OnBnClickedMfcbuttonremove()
 		int selectedIndex = list->GetSelectionMark();
 
 		if (selectedIndex >= 0) {
-			CString str = list->GetItemText(selectedIndex, 0);
-
 			try {
 				PolynomialsApplication::getInstance().getActionExecutor()->execute(Action::RemovePoly, ActionContext(selectedIndex));
-
-				logMessage(L"Removed polynomial: " + std::wstring(str.GetString()));
-
 				setUnsavedChangesState();
 			}
 			catch (ExecuteActionException & e) {
-				WCHAR * text = StringUtils::charToWCHAR(e.what());
-				AfxMessageBox(text);
-				delete text;
-			}
-			catch (std::invalid_argument & e) {
-				WCHAR * text = StringUtils::charToWCHAR(e.what());
-				AfxMessageBox(text);
-				delete text;
+				showExceptionMessageToUser(e);
 			}
 		}
 		else {
-			AfxMessageBox(L"Please select a polynomial first.", MB_OK);
+			AfxMessageBox(L"Please select a polynomial first.", MB_ICONINFORMATION | MB_OK);
 		}
 	}
 	catch (...) {
-		AfxMessageBox(L"Something went wrong... Sorry");
+		showGeneralErrorToUser();
 	}
 }

@@ -4,21 +4,15 @@
 #ifndef POLYNOMIALS_MULACTION_H
 #define POLYNOMIALS_MULACTION_H
 
-#include "IAction.h"
-#include "ActionContext.h"
+#include "AbstractArithmeticAction.h"
 
-class MulAction : public IEditAction
+class MulAction : public AbstractArithmeticAction
 {
-private:
-	ActionContext actionContext;
-
 protected:
 	IAction * clone();
-
-public:
-	void execute(const ActionContext & context) throw(ExecuteActionException);
-	void undo();
-	void redo();
+	Polynomial doExecute();
+	std::wstring getActionName() { return L"Mul"; }
+	char getActionOperator() { return '*'; }
 };
 
 #endif

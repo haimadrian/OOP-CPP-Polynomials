@@ -28,6 +28,8 @@ void RemovePolyAction::execute(const ActionContext & context)
 	// Refresh the width. We do this in case there is a vertical scrollbar created, that adds some 
 	// pixels to the width of the list, which results in a horizontal scrollbar.
 	list->SetColumnWidth(0, LVSCW_AUTOSIZE_USEHEADER);
+
+	PolynomialsApplication::getInstance().getMainWindow()->logMessage(L"Removed polynomial: " + std::wstring(text));
 }
 
 void RemovePolyAction::undo()
@@ -38,6 +40,8 @@ void RemovePolyAction::undo()
 	// Refresh the width. We do this in case there is a vertical scrollbar created, that adds some 
 	// pixels to the width of the list, which results in a horizontal scrollbar.
 	list->SetColumnWidth(0, LVSCW_AUTOSIZE_USEHEADER);
+
+	PolynomialsApplication::getInstance().getMainWindow()->logMessage(L"Undo of RemovePolynomialAction completed.");
 }
 
 void RemovePolyAction::redo()
@@ -48,4 +52,6 @@ void RemovePolyAction::redo()
 	// Refresh the width. We do this in case there is a vertical scrollbar created, that adds some 
 	// pixels to the width of the list, which results in a horizontal scrollbar.
 	list->SetColumnWidth(0, LVSCW_AUTOSIZE_USEHEADER);
+
+	PolynomialsApplication::getInstance().getMainWindow()->logMessage(L"Redo of RemovePolynomialAction: " + std::wstring(text));
 }
