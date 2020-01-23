@@ -1,5 +1,7 @@
 *.exe
 .vs
-.vs/*
 Polynomials/.vs
-Polynomials/.vs/*
+Polynomials/x64
+Polynomials/x86
+Polynomials/Debug
+Polynomials/Release
