@@ -1,0 +1,5 @@
+*.exe
+.vs
+.vs/*
+Polynomials/.vs
+Polynomials/.vs/*
