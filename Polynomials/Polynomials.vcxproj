@@ -225,7 +225,6 @@
   <ItemGroup>
     <ClCompile Include="AboutDlg.cpp" />
     <ClCompile Include="Actions\AbstractArithmeticAction.cpp" />
-    <ClCompile Include="Actions\ActionContext.cpp" />
     <ClCompile Include="Actions\ActionExecutor.cpp" />
     <ClCompile Include="Actions\AddAction.cpp" />
     <ClCompile Include="Actions\CalculateAction.cpp" />

@@ -368,6 +368,40 @@ void CPolynomialsDlg::OnUpdateEditRedo(CCmdUI* pCmdUI) {
 
 void CPolynomialsDlg::OnFileOpen() {
 	try {
+		bool canContinue = false;
+
+		// If there are unsaved changes, prompt to ask user if he wants to exit without saving.
+		if (PolynomialsApplication::getInstance().anyUnsavedChanges())
+		{
+			int answer = AfxMessageBox(L"There are unsaved changes. Are you sure you want to open another list?", MB_ICONEXCLAMATION | MB_YESNO);
+			canContinue = (answer == IDYES);
+		}
+		else {
+			canContinue = true;
+		}
+
+		if (canContinue) {
+			char strFilter[] = { "Text Files (*.txt)|*.txt|" };
+			BOOL isOpen = TRUE;
+			DWORD fileDlgFlags = OFN_HIDEREADONLY;
+			CFileDialog openFileDlg(isOpen, CString(".txt"), NULL, fileDlgFlags, CString(strFilter), this);
+
+			INT_PTR result = openFileDlg.DoModal();
+			if (result == IDOK) {
+				CString fileName = openFileDlg.GetFileName();
+				CString folderPath = openFileDlg.GetFolderPath();
+
+				std::wstring filePath = std::wstring(folderPath.GetString()) + L"\\" + std::wstring(fileName.GetString());
+
+				try {
+					PolynomialsApplication::getInstance().getActionExecutor()->execute(Action::Open, ActionContext(filePath));
+					removeUnsavedChangesState();
+				}
+				catch (ExecuteActionException & e) {
+					showExceptionMessageToUser(e);
+				}
+			}
+		}
 	}
 	catch (...) {
 		showGeneralErrorToUser();
@@ -376,7 +410,26 @@ void CPolynomialsDlg::OnFileOpen() {
 
 void CPolynomialsDlg::OnFileSave() {
 	try {
-		removeUnsavedChangesState();
+		char strFilter[] = { "Text Files (*.txt)|*.txt|" };
+		BOOL isOpen = FALSE;
+		DWORD fileDlgFlags = OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT;
+		CFileDialog saveFileDlg(isOpen, CString(".txt"), NULL, fileDlgFlags, CString(strFilter), this);
+
+		INT_PTR result = saveFileDlg.DoModal();
+		if (result == IDOK) {
+			CString fileName = saveFileDlg.GetFileName();
+			CString folderPath = saveFileDlg.GetFolderPath();
+
+			std::wstring filePath = std::wstring(folderPath.GetString()) + L"\\" + std::wstring(fileName.GetString());
+
+			try {
+				PolynomialsApplication::getInstance().getActionExecutor()->execute(Action::Save, ActionContext(filePath));
+				removeUnsavedChangesState();
+			}
+			catch (ExecuteActionException & e) {
+				showExceptionMessageToUser(e);
+			}
+		}
 	}
 	catch (...) {
 		showGeneralErrorToUser();

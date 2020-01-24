@@ -146,9 +146,6 @@
     <ClCompile Include="DialogLayoutManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Actions\ActionContext.cpp">
-      <Filter>Source Files\Actions</Filter>
-    </ClCompile>
     <ClCompile Include="Actions\ActionExecutor.cpp">
       <Filter>Source Files\Actions</Filter>
     </ClCompile>
