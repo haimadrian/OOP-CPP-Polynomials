@@ -9,7 +9,7 @@
 #include "ActionContext.h"
 #include "ExecuteActionException.h"
 
-enum Action { Add, Div, Evaluate, InsertPoly, KeyDown, Mul, Open, RemovePoly, Save, Sub };
+enum Action { Add, Calculate, Div, Evaluate, InsertPoly, KeyDown, Mul, Open, RemovePoly, Save, Sub };
 
 class ActionFactory {
 public:

@@ -58,7 +58,7 @@ public:
     const Polynomial& operator=(const Monomial &monomial);
 
     /// Evaluate the polynomial for x=?
-    double operator()(int x) const;
+    double operator()(double x) const;
 
     /// Modifying a non existing degree's coefficient will result in undefined behaviour.
     /// Make sure the result differs from 0 before modifying it.

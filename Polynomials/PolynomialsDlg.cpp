@@ -14,6 +14,7 @@
 #include "Actions\\AbstractInputTextKeeperAction.h"
 #include "Utils\\StringUtils.h"
 #include "PolySelectionDialog.h"
+#include "CalculationDialog.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -35,7 +36,7 @@ void showExceptionMessageToUser(std::exception & e) {
 
 
 CPolynomialsDlg::CPolynomialsDlg(CWnd* pParent /*=nullptr*/)
-	: CDialogEx(IDD_POLYNOMIALS_DIALOG, pParent)
+	: m_hAccelTable(nullptr), CDialogEx(IDD_POLYNOMIALS_DIALOG, pParent)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDI_MAIN_ICON);
 	m_layoutManager = new DialogLayoutManager;
@@ -70,6 +71,8 @@ BEGIN_MESSAGE_MAP(CPolynomialsDlg, CDialogEx)
 	ON_COMMAND(ID_EDIT_SUB, OnEditSub)
 	ON_COMMAND(ID_EDIT_MUL, OnEditMul)
 	ON_COMMAND(ID_EDIT_DIV, OnEditDiv)
+	ON_COMMAND(ID_EDIT_CALCULATE, OnEditCalculate)
+	ON_COMMAND(ID_EDIT_GRAPH, OnEditGraph)
 	ON_COMMAND(ID_HELP_ABOUT, OnHelpAbout)
 	ON_UPDATE_COMMAND_UI(ID_EDIT_UNDO32774, OnUpdateEditUndo)
 	ON_UPDATE_COMMAND_UI(ID_EDIT_REDO32775, OnUpdateEditRedo)
@@ -160,6 +163,9 @@ BOOL CPolynomialsDlg::OnInitDialog()
 	list->InsertColumn(0, L"");
 	list->SetColumnWidth(0, LVSCW_AUTOSIZE_USEHEADER);
 
+	// Load accelerator for shortcuts
+	m_hAccelTable = LoadAccelerators(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDR_ACCELERATOR_FOR_MENU));
+
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
 
@@ -211,6 +217,7 @@ BOOL isNavigationKey(WPARAM key) {
 		case VK_LEFT:
 		case VK_RIGHT:
 		case VK_UP:
+		case VK_DOWN:
 		case VK_SHIFT:
 		case LVKF_SHIFT:
 		case VK_CAPITAL:
@@ -230,37 +237,68 @@ void redirectMessage(HWND sender, MSG* pMsg) {
 	}
 }
 
+void CPolynomialsDlg::handleShortcut(int key) {
+	if (key == ('z' - 'a' + 1)) {
+		OnEditUndo();
+	}
+	else if (key == ('y' - 'a' + 1)) {
+		OnEditRedo();
+	}
+	else if (key == ('o' - 'a' + 1)) {
+		OnFileOpen();
+	}
+	else if (key == ('s' - 'a' + 1)) {
+		OnFileSave();
+	}
+}
+
+
 BOOL CPolynomialsDlg::PreTranslateMessage(MSG* pMsg)
 {
+	// First try to handle shortcuts.
+	if (m_hAccelTable)
+	{
+		if (TranslateAccelerator(this->GetSafeHwnd(), m_hAccelTable, pMsg))
+		{
+			handleShortcut((int)pMsg->wParam);
+			return TRUE;
+		}
+	}
+
 	try {
 		// Globally catch key down message to redirect it to the input.
 		if (pMsg->message == WM_KEYDOWN)
 		{
-			// Do not redirect event if sender is the console or list control, to let user copy text.
-			if ((pMsg->hwnd != GetDlgItem(IDC_CONSOLE)->GetSafeHwnd()) && (pMsg->hwnd != GetDlgItem(IDC_PolynomialsList)->GetSafeHwnd())) {
-				if (pMsg->wParam == VK_RETURN) {
-					OnBnClickedMfcbuttoneq();
-				}
-				// If it is a navigation key, and current handle is the input edit, redirect it
-				else if (isNavigationKey(pMsg->wParam)) {
-					redirectMessage(GetSafeHwnd(), pMsg);
-				}
-				else {
-					try {
-						ActionContext context(pMsg->lParam, pMsg->wParam);
-						PolynomialsApplication::getInstance().getActionExecutor()->execute(Action::KeyDown, context);
-					}
-					catch (ExecuteActionException & e) {
-						showExceptionMessageToUser(e);
-					}
-				}
+			if (pMsg->wParam == VK_RETURN) {
+				OnBnClickedMfcbuttoneq();
+				return TRUE;
+			}
 
-				return true;
+			// Do not redirect event if sender is the console or list control, to let user copy text.
+			if (pMsg->hwnd != GetDlgItem(IDC_CONSOLE)->GetSafeHwnd()) {
+				// If it is a navigation key, and current handle is the input edit, redirect it
+				if (!isNavigationKey(pMsg->wParam)) {
+					// When input edit is in focus, and a shortcut is pressed, it is being dismissed
+					// for some reason.. Handle it manually here.
+					if (GetAsyncKeyState(VK_CONTROL)) {
+						handleShortcut(tolower((int)pMsg->wParam) - 'a' + 1);
+					} else {
+						try {
+							ActionContext context(pMsg->lParam, pMsg->wParam);
+							PolynomialsApplication::getInstance().getActionExecutor()->execute(Action::KeyDown, context);
+						}
+						catch (ExecuteActionException & e) {
+							showExceptionMessageToUser(e);
+						}
+					}
+
+					return TRUE;
+				}
 			}
 		}
 		else if ((pMsg->message == WM_RBUTTONDOWN) || (pMsg->message == WM_RBUTTONUP)) {
 			// Ignore it so user cannot open CEdit right click menu
-			return true;
+			return TRUE;
 		}
 	}
 	catch (...) {
@@ -272,7 +310,7 @@ BOOL CPolynomialsDlg::PreTranslateMessage(MSG* pMsg)
 
 void CPolynomialsDlg::OnSysCommand(UINT nID, LPARAM lParam)
 {
-	if ((nID & 0xFFF0) == IDM_ABOUTBOX)
+	if ((nID & 0xFFF0) == IDD_ABOUTBOX)
 	{
 		CAboutDlg dlgAbout;
 		dlgAbout.DoModal();
@@ -485,6 +523,45 @@ void CPolynomialsDlg::OnEditDiv() {
 				showExceptionMessageToUser(e);
 			}
 		}
+	}
+	catch (...) {
+		showGeneralErrorToUser();
+	}
+}
+
+void CPolynomialsDlg::OnEditCalculate() {
+	try {
+		CListCtrl * list = (CListCtrl *)GetDlgItem(IDC_PolynomialsList);
+		int selectedIndex = list->GetSelectionMark();
+
+		if (selectedIndex >= 0) {
+			CalculationDialog dlg(this);
+			INT_PTR response = dlg.DoModal();
+			if (response == IDOK)
+			{
+				double xValue = dlg.getXValue();
+
+				try {
+					PolynomialsApplication::getInstance().getActionExecutor()->execute(Action::Calculate, ActionContext(selectedIndex, xValue));
+				}
+				catch (ExecuteActionException & e) {
+					showExceptionMessageToUser(e);
+				}
+			}
+		}
+		else {
+			AfxMessageBox(L"Please select a polynomial first.", MB_ICONINFORMATION | MB_OK);
+		}
+		
+	}
+	catch (...) {
+		showGeneralErrorToUser();
+	}
+}
+
+void CPolynomialsDlg::OnEditGraph() {
+	try {
+
 	}
 	catch (...) {
 		showGeneralErrorToUser();

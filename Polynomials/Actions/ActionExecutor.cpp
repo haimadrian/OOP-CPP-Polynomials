@@ -2,6 +2,7 @@
 #include <deque>
 #include "ActionExecutor.h"
 #include "AddAction.h"
+#include "CalculateAction.h"
 #include "DivAction.h"
 #include "EvaluateInputAction.h"
 #include "InsertPolyAction.h"
@@ -141,6 +142,7 @@ IAction * ActionFactory::createAction(Action actionType) {
 
 	switch (actionType) {
 		case Add: action = new AddAction(); break;
+		case Calculate: action = new CalculateAction(); break;
 		case Div: action = new DivAction(); break;
 		case Evaluate: action = new EvaluateInputAction(); break;
 		case InsertPoly: action = new InsertPolyAction(); break;

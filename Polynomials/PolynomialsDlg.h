@@ -29,12 +29,14 @@ private:
 	void removeUnsavedChangesState();
 	void freeLayoutManager();
 	bool canExecuteArithmeticAction();
+	void handleShortcut(int key);
 
 // Implementation
 protected:
 	HICON m_hIcon;
 	CString m_strCaption;
 	DialogLayoutManager * m_layoutManager;
+	HACCEL m_hAccelTable = nullptr;
 
 	// Generated message map functions
 	virtual BOOL OnInitDialog();
@@ -56,6 +58,8 @@ protected:
 	void OnEditSub();
 	void OnEditMul();
 	void OnEditDiv();
+	void OnEditCalculate();
+	void OnEditGraph();
 	void OnHelpAbout();
 public:
 	void logMessage(const std::wstring & message);

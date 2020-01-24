@@ -283,7 +283,7 @@ const Polynomial &Polynomial::operator=(const Monomial &monomial) {
     return *this;
 }
 
-double Polynomial::operator()(int x) const {
+double Polynomial::operator()(double x) const {
     double result = 0;
     MonomNode *iter = head;
 

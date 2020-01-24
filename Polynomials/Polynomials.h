@@ -2,6 +2,9 @@
 // Polynomials.h : main header file for the PROJECT_NAME application
 //
 
+#ifndef POLYNOMIALS_POLYNOMIALS_H
+#define POLYNOMIALS_POLYNOMIALS_H
+
 #pragma once
 
 #ifndef __AFXWIN_H__
@@ -9,6 +12,7 @@
 #endif
 
 #include "resource.h"		// main symbols
+#include "framework.h"
 
 
 // CPolynomialsApp:
@@ -30,3 +34,5 @@ public:
 };
 
 extern CPolynomialsApp theApp;
+
+#endif

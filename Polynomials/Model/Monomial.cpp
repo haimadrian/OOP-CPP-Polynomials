@@ -128,7 +128,7 @@ const Monomial& Monomial::operator=(const Monomial &monomial) {
     return *this;
 }
 
-double Monomial::operator()(int x) const {
+double Monomial::operator()(double x) const {
     return (this->coefficient * pow(x, this->degree));
 }
 

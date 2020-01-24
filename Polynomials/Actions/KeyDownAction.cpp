@@ -24,11 +24,6 @@ void KeyDownAction::executeBasedOnExistingData(CEdit * inputEdit)
 		if (isdigit(ascii) || PolynomialUtils::isOperator(ascii) || (tolower(ascii) == 'x') || (ascii == ' ') || (ascii == '.')) {
 			text = new WCHAR[2]{ (WCHAR)tolower(ascii), '\0' };
 
-			// In order to avoid of replacing text with single input char in one action, handle selection
-			if (caretStart != caretEnd) {
-				caretStart = caretEnd;
-			}
-
 			inputEdit->SetSel(caretStart, caretEnd);
 
 			// Insert the text at the caret position
@@ -76,6 +71,14 @@ void KeyDownAction::execute(const ActionContext & context)
 
 	CEdit * inputEdit = PolynomialsApplication::getInstance().getInputTextControl();
 	inputEdit->GetSel(caretStart, caretEnd);
+
+	// When there is a selection that we need to replace, execute a DEL key down first
+	// to delete selection and win the ability to undo that
+	if ((caretStart != caretEnd) && (virtualKey != VK_BACK) && (virtualKey != VK_DELETE)) {
+		ActionContext context(actionContext.getLParam(), (WPARAM)VK_DELETE);
+		PolynomialsApplication::getInstance().getActionExecutor()->execute(Action::KeyDown, context);
+		inputEdit->GetSel(caretStart, caretEnd);
+	}
 
 	// Now handle the text
 	executeBasedOnExistingData(inputEdit);

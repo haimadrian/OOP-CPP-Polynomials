@@ -50,7 +50,7 @@ public:
     const Monomial& operator=(const Monomial &monomial);
 
     /// Evaluate the monomial for x=?
-    double operator()(int x) const;
+    double operator()(double x) const;
 
     bool operator==(const Monomial &another) const;
     bool operator!=(const Monomial &another) const;

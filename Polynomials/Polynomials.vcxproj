@@ -194,6 +194,7 @@
     <ClInclude Include="Actions\ActionContext.h" />
     <ClInclude Include="Actions\ActionExecutor.h" />
     <ClInclude Include="Actions\AddAction.h" />
+    <ClInclude Include="Actions\CalculateAction.h" />
     <ClInclude Include="Actions\DivAction.h" />
     <ClInclude Include="Actions\EvaluateInputAction.h" />
     <ClInclude Include="Actions\ExecuteActionException.h" />
@@ -205,6 +206,7 @@
     <ClInclude Include="Actions\RemovePolyAction.h" />
     <ClInclude Include="Actions\SaveAction.h" />
     <ClInclude Include="Actions\SubAction.h" />
+    <ClInclude Include="CalculationDialog.h" />
     <ClInclude Include="DialogLayoutManager.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="PolySelectionDialog.h" />
@@ -226,6 +228,7 @@
     <ClCompile Include="Actions\ActionContext.cpp" />
     <ClCompile Include="Actions\ActionExecutor.cpp" />
     <ClCompile Include="Actions\AddAction.cpp" />
+    <ClCompile Include="Actions\CalculateAction.cpp" />
     <ClCompile Include="Actions\DivAction.cpp" />
     <ClCompile Include="Actions\EvaluateInputAction.cpp" />
     <ClCompile Include="Actions\InsertPolyAction.cpp" />
@@ -235,6 +238,7 @@
     <ClCompile Include="Actions\RemovePolyAction.cpp" />
     <ClCompile Include="Actions\SaveAction.cpp" />
     <ClCompile Include="Actions\SubAction.cpp" />
+    <ClCompile Include="CalculationDialog.cpp" />
     <ClCompile Include="DialogLayoutManager.cpp" />
     <ClCompile Include="Model\Monomial.cpp" />
     <ClCompile Include="Model\Polynomial.cpp" />
