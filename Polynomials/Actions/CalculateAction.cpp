@@ -16,7 +16,8 @@ IAction * CalculateAction::clone()
 	return new CalculateAction();
 }
 
-std::string doubleToString(double value) {
+std::string doubleToString(double value)
+{
 	std::ostringstream outStr;
 
 	// Set Fixed-Point Notation
@@ -26,8 +27,10 @@ std::string doubleToString(double value) {
 	return outStr.str();
 }
 
-void CalculateAction::execute(const ActionContext & context) {
-	try {
+void CalculateAction::execute(const ActionContext & context)
+{
+	try
+	{
 		Polynomial poly = AbstractArithmeticAction::buildPolynomialFromList(context.getSelectedPolyIndex());
 		double result = poly(context.getXValue());
 
@@ -40,7 +43,8 @@ void CalculateAction::execute(const ActionContext & context) {
 
 		PolynomialsApplication::getInstance().getMainWindow()->logMessage(wstr);
 	}
-	catch (...) {
+	catch (...)
+	{
 		throw ExecuteActionException(std::string("Failed to calculate value for x=") + doubleToString(context.getXValue()));
 	}
 }

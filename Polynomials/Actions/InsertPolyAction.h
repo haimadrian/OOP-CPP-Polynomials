@@ -22,7 +22,7 @@ protected:
 	IAction * clone();
 
 public:
-	InsertPolyAction() :EvaluateInputAction(false) {}
+	InsertPolyAction() :EvaluateInputAction(false) { }
 	void execute(const ActionContext & context) throw(ExecuteActionException);
 	void undo();
 	void redo();

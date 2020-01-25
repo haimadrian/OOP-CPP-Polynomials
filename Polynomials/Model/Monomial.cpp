@@ -13,90 +13,110 @@
 
 int Monomial::monomialObjectsCount = 0;
 
-static void validatePositiveDegree(int degree) {
-    // As we support division, a degree can be negative.
+static void validatePositiveDegree(int degree)
+{
+	// As we support division, a degree can be negative.
 	//if (degree < 0) {
-    //    std::cerr << "Warn: A negative degree has been received: " << degree << std::endl;
-    //}
+	//    std::cerr << "Warn: A negative degree has been received: " << degree << std::endl;
+	//}
 }
 
-Monomial::Monomial(double coefficient, int degree):coefficient(coefficient),degree(degree) {
-    ++monomialObjectsCount;
-    validatePositiveDegree(degree);
+Monomial::Monomial(double coefficient, int degree) :coefficient(coefficient), degree(degree)
+{
+	++monomialObjectsCount;
+	validatePositiveDegree(degree);
 }
 
-Monomial::Monomial(const Monomial &another):coefficient(another.coefficient), degree(another.degree) {
-    ++monomialObjectsCount;
-    validatePositiveDegree(degree);
+Monomial::Monomial(const Monomial &another) :coefficient(another.coefficient), degree(another.degree)
+{
+	++monomialObjectsCount;
+	validatePositiveDegree(degree);
 }
 
-Monomial::~Monomial() {
-    --monomialObjectsCount;
+Monomial::~Monomial()
+{
+	--monomialObjectsCount;
 }
 
-int Monomial::getNumberOfMonomials() {
-    return monomialObjectsCount;
+int Monomial::getNumberOfMonomials()
+{
+	return monomialObjectsCount;
 }
 
-double Monomial::getCoefficient() const {
-    return coefficient;
+double Monomial::getCoefficient() const
+{
+	return coefficient;
 }
 
-double &Monomial::getCoefficientProperty() {
-    return coefficient;
+double &Monomial::getCoefficientProperty()
+{
+	return coefficient;
 }
 
-int Monomial::getDegree() const {
-    return degree;
+int Monomial::getDegree() const
+{
+	return degree;
 }
 
-bool Monomial::add(const Monomial &monomial) {
-    // If degrees are different, this results in nothing.
-    (*this) += monomial;
+bool Monomial::add(const Monomial &monomial)
+{
+	// If degrees are different, this results in nothing.
+	(*this) += monomial;
 
-    return this->degree == monomial.degree;
+	return this->degree == monomial.degree;
 }
 
-Monomial & Monomial::operator+=(const Monomial & another) {
-    if (degree == another.degree) {
-        coefficient += another.coefficient;
-    }
+Monomial & Monomial::operator+=(const Monomial & another)
+{
+	if (degree == another.degree)
+	{
+		coefficient += another.coefficient;
+	}
 
-    return *this;
+	return *this;
 }
 
-Monomial Monomial::operator+(const Monomial & another) const {
-    return (Monomial(*this) += another);
+Monomial Monomial::operator+(const Monomial & another) const
+{
+	return (Monomial(*this) += another);
 }
 
-Monomial & Monomial::operator-=(const Monomial & another) {
-    if (degree == another.degree) {
-        coefficient -= another.coefficient;
-    }
+Monomial & Monomial::operator-=(const Monomial & another)
+{
+	if (degree == another.degree)
+	{
+		coefficient -= another.coefficient;
+	}
 
-    return *this;
+	return *this;
 }
 
-Monomial Monomial::operator-(const Monomial & another) const {
-    return (Monomial(*this) -= another);
+Monomial Monomial::operator-(const Monomial & another) const
+{
+	return (Monomial(*this) -= another);
 }
 
-Monomial Monomial::operator-() const {
-    return Monomial(0 - this->coefficient, this->degree);
+Monomial Monomial::operator-() const
+{
+	return Monomial(0 - this->coefficient, this->degree);
 }
 
-Monomial &Monomial::operator*=(const Monomial &another) {
-    this->coefficient *= another.coefficient;
-    this->degree += another.degree;
-    return *this;
+Monomial &Monomial::operator*=(const Monomial &another)
+{
+	this->coefficient *= another.coefficient;
+	this->degree += another.degree;
+	return *this;
 }
 
-Monomial Monomial::operator*(const Monomial &another) const {
-    return (Monomial(*this) *= another);
+Monomial Monomial::operator*(const Monomial &another) const
+{
+	return (Monomial(*this) *= another);
 }
 
-Monomial &Monomial::operator/=(const Monomial &another) {
-	if (another.coefficient == 0) {
+Monomial &Monomial::operator/=(const Monomial &another)
+{
+	if (another.coefficient == 0)
+	{
 		throw std::overflow_error("Overflow Error: Cannot divide by zero.");
 	}
 
@@ -105,12 +125,15 @@ Monomial &Monomial::operator/=(const Monomial &another) {
 	return *this;
 }
 
-Monomial Monomial::operator/(const Monomial &another) const {
+Monomial Monomial::operator/(const Monomial &another) const
+{
 	return (Monomial(*this) /= another);
 }
 
-Monomial &Monomial::operator^=(const Monomial &another) {
-	if (another.getDegree() > 0) {
+Monomial &Monomial::operator^=(const Monomial &another)
+{
+	if (another.getDegree() > 0)
+	{
 		throw std::overflow_error("Overflow Error: Cannot power by x, only by a number.");
 	}
 
@@ -118,37 +141,45 @@ Monomial &Monomial::operator^=(const Monomial &another) {
 	return *this;
 }
 
-Monomial Monomial::operator^(const Monomial &another) const {
+Monomial Monomial::operator^(const Monomial &another) const
+{
 	return (Monomial(*this) ^= another);
 }
 
-const Monomial& Monomial::operator=(const Monomial &monomial) {
-    if (this != &monomial) {
-        this->coefficient = monomial.coefficient;
-        this->degree = monomial.degree;
-    }
+const Monomial& Monomial::operator=(const Monomial &monomial)
+{
+	if (this != &monomial)
+	{
+		this->coefficient = monomial.coefficient;
+		this->degree = monomial.degree;
+	}
 
-    return *this;
+	return *this;
 }
 
-double Monomial::operator()(double x) const {
-    return (this->coefficient * pow(x, this->degree));
+double Monomial::operator()(double x) const
+{
+	return (this->coefficient * pow(x, this->degree));
 }
 
-bool Monomial::operator==(const Monomial &another) const {
-    return (this == &another) ||
-        ((this->coefficient == 0) && (another.coefficient == 0)) ||
-        ((this->coefficient == another.coefficient) && (this->degree == another.degree));
+bool Monomial::operator==(const Monomial &another) const
+{
+	return (this == &another) ||
+		((this->coefficient == 0) && (another.coefficient == 0)) ||
+		((this->coefficient == another.coefficient) && (this->degree == another.degree));
 }
 
-bool Monomial::operator!=(const Monomial &another) const {
-    return !(*this == another);
+bool Monomial::operator!=(const Monomial &another) const
+{
+	return !(*this == another);
 }
 
-void Monomial::write(std::ostream & out) const {
+void Monomial::write(std::ostream & out) const
+{
 	double coeff = this->getCoefficient();
 
-	if (coeff == 0) {
+	if (coeff == 0)
+	{
 		out << '0';
 		return; // Exit. Nothing more to do with 0.
 	}
@@ -158,25 +189,30 @@ void Monomial::write(std::ostream & out) const {
 	int deg = this->getDegree();
 
 	// Handle coefficient part
-	if ((coeff != 1) || (deg == 0)) {
+	if ((coeff != 1) || (deg == 0))
+	{
 		out << coeff;
 
-		if (deg != 0) {
+		if (deg != 0)
+		{
 			out << "*";
 		}
 	}
 
 	// Handle degree part
-	if (deg != 0) {
+	if (deg != 0)
+	{
 		out << "x";
 
-		if (deg != 1) {
+		if (deg != 1)
+		{
 			out << "^" << deg;
 		}
 	}
 }
 
-void Monomial::read(std::istream & in) {
+void Monomial::read(std::istream & in)
+{
 	// Default values of coefficient and degree.
 	this->coefficient = 0;
 	this->degree = 0;
@@ -184,24 +220,36 @@ void Monomial::read(std::istream & in) {
 	int tempChar = StringUtils::getIgnoringWhitespace(in);
 	int sign = 1;
 
-	if (tempChar == std::char_traits<char>::to_int_type('-')) {
+	if (tempChar == std::char_traits<char>::to_int_type('-'))
+	{
 		sign = -1;
-	} else if (tempChar == std::char_traits<char>::to_int_type('+')) {
+	}
+	else if (tempChar == std::char_traits<char>::to_int_type('+'))
+	{
 		sign = 1;
-	} else if ((!isdigit(tempChar)) && (tolower(tempChar) != std::char_traits<char>::to_int_type('x'))) {
-		if ((char)tempChar == '\n') {
+	}
+	else if ((!isdigit(tempChar)) && (tolower(tempChar) != std::char_traits<char>::to_int_type('x')))
+	{
+		if ((char)tempChar == '\n')
+		{
 			throw std::invalid_argument(std::string("Failed to parse input text. Unexpected character:   'END'"));
-		} else {
+		}
+		else
+		{
 			throw std::invalid_argument((std::string("Failed to parse input text. Unexpected character:   '") + (char)tempChar + '\''));
 		}
-	} else {
+	}
+	else
+	{
 		in.unget(); // Maybe a digit or 'x'
 	}
 
-	if (isdigit(StringUtils::peekIgnoringWhitespace(in))) {
+	if (isdigit(StringUtils::peekIgnoringWhitespace(in)))
+	{
 		in >> this->coefficient;
 	}
-	else if (tolower(StringUtils::peekIgnoringWhitespace(in)) == std::char_traits<char>::to_int_type('x')) {
+	else if (tolower(StringUtils::peekIgnoringWhitespace(in)) == std::char_traits<char>::to_int_type('x'))
+	{
 		this->coefficient = 1;
 	}
 
@@ -209,12 +257,16 @@ void Monomial::read(std::istream & in) {
 
 	// Make sure it is not an operator. Operators are handled at the Polynomial level.
 	if ((!PolynomialUtils::isOperator(StringUtils::peekIgnoringWhitespace(in))) ||
-		(StringUtils::peekIgnoringWhitespace(in) == std::char_traits<char>::to_int_type('*'))) {
-		if (StringUtils::peekIgnoringWhitespace(in) == std::char_traits<char>::to_int_type('*')) {
+		(StringUtils::peekIgnoringWhitespace(in) == std::char_traits<char>::to_int_type('*')))
+	{
+		if (StringUtils::peekIgnoringWhitespace(in) == std::char_traits<char>::to_int_type('*'))
+		{
 			in.get(); // Drop the '*' to check if there is an x.
-			if (tolower(StringUtils::peekIgnoringWhitespace(in)) != std::char_traits<char>::to_int_type('x')) {
+			if (tolower(StringUtils::peekIgnoringWhitespace(in)) != std::char_traits<char>::to_int_type('x'))
+			{
 				// If it was not x, but not a digit, that's an illegal input.
-				if (!isdigit(StringUtils::peekIgnoringWhitespace(in))) {
+				if (!isdigit(StringUtils::peekIgnoringWhitespace(in)))
+				{
 					throw std::invalid_argument((std::string("Failed to parse input text. Unexpected character after '*':   '") +
 						(char)StringUtils::peekIgnoringWhitespace(in) + '\''));
 				}
@@ -224,14 +276,17 @@ void Monomial::read(std::istream & in) {
 			}
 		}
 
-		if (tolower(StringUtils::peekIgnoringWhitespace(in)) == std::char_traits<char>::to_int_type('x')) {
+		if (tolower(StringUtils::peekIgnoringWhitespace(in)) == std::char_traits<char>::to_int_type('x'))
+		{
 			in.get(); // Drop the 'x' to get to the degree
-			if (StringUtils::peekIgnoringWhitespace(in) == std::char_traits<char>::to_int_type('^')) {
+			if (StringUtils::peekIgnoringWhitespace(in) == std::char_traits<char>::to_int_type('^'))
+			{
 				in.get(); // Drop the '^' to get to the degree
 
 				if ((!isdigit(tempChar = StringUtils::peekIgnoringWhitespace(in))) &&
 					(tempChar != std::char_traits<char>::to_int_type('-')) &&
-					(tempChar != std::char_traits<char>::to_int_type('+'))) {
+					(tempChar != std::char_traits<char>::to_int_type('+')))
+				{
 					throw std::invalid_argument((std::string("Failed to parse input text. Unexpected character after '^':   '") +
 						((char)tempChar == '\n' ? "END" : ("" + (char)tempChar)) + '\''));
 				}
@@ -239,15 +294,18 @@ void Monomial::read(std::istream & in) {
 				sign = 1;
 
 				// If there is a sign, remove it to make sure there is a digit after the sign.
-				if ((tempChar == std::char_traits<char>::to_int_type('-')) || (tempChar == std::char_traits<char>::to_int_type('+'))) {
+				if ((tempChar == std::char_traits<char>::to_int_type('-')) || (tempChar == std::char_traits<char>::to_int_type('+')))
+				{
 					in.get();
 
 					// Before we override the sign, keep it
-					if (tempChar == std::char_traits<char>::to_int_type('-')) {
+					if (tempChar == std::char_traits<char>::to_int_type('-'))
+					{
 						sign = -1;
 					}
 
-					if (!isdigit(tempChar = StringUtils::peekIgnoringWhitespace(in))) {
+					if (!isdigit(tempChar = StringUtils::peekIgnoringWhitespace(in)))
+					{
 						throw std::invalid_argument((std::string("Failed to parse input text. Unexpected character after ^sign:   '") +
 							((char)tempChar == '\n' ? "END" : ("" + (char)tempChar)) + '\''));
 					}
@@ -256,8 +314,10 @@ void Monomial::read(std::istream & in) {
 				in >> this->degree;
 				this->degree *= sign;
 			}
-			else {
-				if (StringUtils::peekIgnoringWhitespace(in) == std::char_traits<char>::to_int_type('.')) {
+			else
+			{
+				if (StringUtils::peekIgnoringWhitespace(in) == std::char_traits<char>::to_int_type('.'))
+				{
 					throw std::invalid_argument((std::string("Failed to parse input text. Unexpected character after 'x':   '") +
 						(char)StringUtils::peekIgnoringWhitespace(in) + '\''));
 				}

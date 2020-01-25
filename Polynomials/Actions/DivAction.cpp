@@ -14,7 +14,8 @@ IAction * DivAction::clone()
 	return result;
 }
 
-Polynomial DivAction::doExecute() {
+Polynomial DivAction::doExecute()
+{
 	Polynomial left = getLeftPoly();
 	Polynomial right = getRightPoly();
 

@@ -21,41 +21,49 @@
 #include "SaveAction.h"
 #include "SubAction.h"
 
-ActionExecutor::ActionExecutor() {
+ActionExecutor::ActionExecutor()
+{
 	actions = new std::deque<IAction *>();
 	undoneActions = new std::deque<IAction *>();
 }
 
-ActionExecutor::ActionExecutor(ActionExecutor & another) {
+ActionExecutor::ActionExecutor(ActionExecutor & another)
+{
 	*this = another;
 }
 
-ActionExecutor & ActionExecutor::operator=(ActionExecutor & another) {
-	if (this != &another) {
+ActionExecutor & ActionExecutor::operator=(ActionExecutor & another)
+{
+	if (this != &another)
+	{
 		clearActions();
 		clearUndoneActions();
 
 		std::deque<IAction *> helper;
 
 		// Take all actions from another into helper
-		while (!another.actions->empty()) {
+		while (!another.actions->empty())
+		{
 			helper.push_front(another.actions->front());
 			another.actions->pop_front();
 		}
 
 		// Now put the actions in their original order into both another and this.
-		while (!helper.empty()) {
+		while (!helper.empty())
+		{
 			another.actions->push_front(helper.front());
 			actions->push_front(helper.front()->clone());
 			helper.pop_front();
 		}
 
 		// Now do the same with undone actions->
-		while (!another.undoneActions->empty()) {
+		while (!another.undoneActions->empty())
+		{
 			helper.push_front(another.undoneActions->front());
 			another.undoneActions->pop_front();
 		}
-		while (!helper.empty()) {
+		while (!helper.empty())
+		{
 			another.undoneActions->push_front(helper.front());
 			undoneActions->push_front(helper.front()->clone());
 			helper.pop_front();
@@ -65,14 +73,16 @@ ActionExecutor & ActionExecutor::operator=(ActionExecutor & another) {
 	return *this;
 }
 
-ActionExecutor::~ActionExecutor() {
+ActionExecutor::~ActionExecutor()
+{
 	clearActions();
 	clearUndoneActions();
 	delete actions;
 	delete undoneActions;
 }
 
-void ActionExecutor::clearActions() {
+void ActionExecutor::clearActions()
+{
 	while (!actions->empty())
 	{
 		delete actions->front();
@@ -80,7 +90,8 @@ void ActionExecutor::clearActions() {
 	}
 }
 
-void ActionExecutor::clearUndoneActions() {
+void ActionExecutor::clearUndoneActions()
+{
 	while (!undoneActions->empty())
 	{
 		delete undoneActions->front();
@@ -88,9 +99,11 @@ void ActionExecutor::clearUndoneActions() {
 	}
 }
 
-void ActionExecutor::safePush(std::deque<IAction *> * stack, IAction * action) {
+void ActionExecutor::safePush(std::deque<IAction *> * stack, IAction * action)
+{
 	// If we have reached maximum amount of undoable actions, remove the most oldest one before add
-	if (stack->size() == MAX_ACTIONS) {
+	if (stack->size() == MAX_ACTIONS)
+	{
 		delete stack->back();
 		stack->pop_back();
 	}
@@ -98,39 +111,50 @@ void ActionExecutor::safePush(std::deque<IAction *> * stack, IAction * action) {
 	stack->push_front(action);
 }
 
-void ActionExecutor::execute(Action actionType, ActionContext & context) throw(ExecuteActionException) {
+void ActionExecutor::execute(Action actionType, ActionContext & context) throw(ExecuteActionException)
+{
 	IAction * action = ActionFactory::createAction(actionType);
-	if (action == nullptr) {
+	if (action == nullptr)
+	{
 		throw ExecuteActionException("Cannot execute action. Unknown Action: " + actionType);
 	}
 
-	try {
+	try
+	{
 		// In case it fails, an exception will be thrown before pushing it.
 		action->execute(context);
-	} catch (std::exception &) {
+	}
+	catch (std::exception &)
+	{
 		delete action;
 		throw;
-	} catch (const std::exception &) {
+	}
+	catch (const std::exception &)
+	{
 		delete action;
 		throw;
 	}
 
 	// In case it is an edit action, keep it in the stack.
-	if (dynamic_cast<IEditAction*>(action) != nullptr) {
+	if (dynamic_cast<IEditAction*>(action) != nullptr)
+	{
 		safePush(actions, action);
 
 		// When we execute an action, we override the undone action, because a new action is now in the stack.
 		// So here we clear undone actions such that there will be nothing to redo when a new action is executed.
 		clearUndoneActions();
 	}
-	else {
+	else
+	{
 		// Free the action as we do not keep a reference to it anymore
 		delete action;
 	}
 }
 
-void ActionExecutor::undo() {
-	if (canUndo()) {
+void ActionExecutor::undo()
+{
+	if (canUndo())
+	{
 		// Undo the last action
 		dynamic_cast<IEditAction*>(actions->front())->undo();
 		safePush(undoneActions, actions->front());
@@ -138,8 +162,10 @@ void ActionExecutor::undo() {
 	}
 }
 
-void ActionExecutor::redo() {
-	if (canRedo()) {
+void ActionExecutor::redo()
+{
+	if (canRedo())
+	{
 		// Redo the last undone action
 		dynamic_cast<IEditAction*>(undoneActions->front())->redo();
 		safePush(actions, undoneActions->front());
@@ -147,20 +173,24 @@ void ActionExecutor::redo() {
 	}
 }
 
-bool ActionExecutor::canUndo() const {
+bool ActionExecutor::canUndo() const
+{
 	// Is there anything to undo?
 	return !actions->empty();
 }
 
-bool ActionExecutor::canRedo() const {
+bool ActionExecutor::canRedo() const
+{
 	// Is there anything to redo?
 	return !undoneActions->empty();
 }
 
-IAction * ActionFactory::createAction(Action actionType) {
+IAction * ActionFactory::createAction(Action actionType)
+{
 	IAction * action;
 
-	switch (actionType) {
+	switch (actionType)
+	{
 		case Add: action = new AddAction(); break;
 		case Calculate: action = new CalculateAction(); break;
 		case Copy: action = new CopyAction(); break;
@@ -169,7 +199,7 @@ IAction * ActionFactory::createAction(Action actionType) {
 		case InsertPoly: action = new InsertPolyAction(); break;
 		case KeyDown: action = new KeyDownAction(); break;
 		case Mul: action = new MulAction(); break;
-		case Open: action = new OpenAction(); break; 
+		case Open: action = new OpenAction(); break;
 		case Paste: action = new PasteAction(); break;
 		case RemovePoly:  action = new RemovePolyAction(); break;
 		case Save: action = new SaveAction(); break;

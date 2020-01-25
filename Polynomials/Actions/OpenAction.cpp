@@ -20,15 +20,18 @@ void OpenAction::execute(const ActionContext & context)
 {
 	std::ifstream f(context.getFilePath());
 
-	try {
+	try
+	{
 		CListCtrl * list = PolynomialsApplication::getInstance().getPolyListControl();
 
 		int count = list->GetItemCount();
-		if (count > 0) {
+		if (count > 0)
+		{
 			list->DeleteAllItems();
 		}
 
-		while (StringUtils::peekIgnoringWhitespace(f) != EOF) {
+		while (StringUtils::peekIgnoringWhitespace(f) != EOF)
+		{
 			Polynomial p;
 			f >> p;
 
@@ -46,15 +49,18 @@ void OpenAction::execute(const ActionContext & context)
 		PolynomialsApplication::getInstance().getMainWindow()->logMessage(
 			std::wstring(L"Polynomials read from file: ") + context.getFilePath());
 	}
-	catch (std::invalid_argument & e) {
+	catch (std::invalid_argument & e)
+	{
 		f.close(); // Make sure file is closed
 		throw ExecuteActionException(std::string("Error has occurred while reading polynomials from file: ") + std::string(e.what()));
 	}
-	catch (std::overflow_error & e) {
+	catch (std::overflow_error & e)
+	{
 		f.close(); // Make sure file is closed
 		throw ExecuteActionException(std::string("Error has occurred while reading polynomials from file: ") + std::string(e.what()));
 	}
-	catch (...) {
+	catch (...)
+	{
 		f.close(); // Make sure file is closed
 		throw ExecuteActionException("Error has occurred while reading polynomials from file");
 	}

@@ -28,12 +28,13 @@ protected:
 	IAction * clone();
 
 public:
-	EvaluateInputAction(bool shouldLog = true):shouldLog(shouldLog){}
+	EvaluateInputAction(bool shouldLog = true) :shouldLog(shouldLog) { }
 	void execute(const ActionContext & context) throw(ExecuteActionException);
 	void undo();
 	void redo();
 
-	static Polynomial buildPolynomialFromInputText() {
+	static Polynomial buildPolynomialFromInputText()
+	{
 		CEdit * input = PolynomialsApplication::getInstance().getInputTextControl();
 		WCHAR * txt = AbstractInputTextKeeperAction::getWholeText(input);
 		int len = lstrlenW(txt);

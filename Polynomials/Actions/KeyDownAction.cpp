@@ -25,27 +25,33 @@ IAction * KeyDownAction::clone()
 void KeyDownAction::executeBasedOnExistingData(CEdit * inputEdit)
 {
 	// If it is not the backspace key or delete key, append text.
-	if ((virtualKey != VK_BACK) && (virtualKey != VK_DELETE)) {
+	if ((virtualKey != VK_BACK) && (virtualKey != VK_DELETE))
+	{
 		// Make sure it is a digit or acceptable sign
-		if (isdigit(ascii) || PolynomialUtils::isOperator(ascii) || (tolower(ascii) == 'x') || (ascii == ' ') || (ascii == '.')) {
-			text = new WCHAR[2]{ (WCHAR)tolower(ascii), '\0' };
+		if (isdigit(ascii) || PolynomialUtils::isOperator(ascii) || (tolower(ascii) == 'x') || (ascii == ' ') || (ascii == '.'))
+		{
+			text = new WCHAR[2] { (WCHAR)tolower(ascii), '\0' };
 
 			inputEdit->SetSel(caretStart, caretEnd);
 
 			// Insert the text at the caret position
 			inputEdit->ReplaceSel(text);
 		}
-		else {
+		else
+		{
 			throw ExecuteActionException(std::string("Illegal input:   '") + (char)ascii + '\'');
 		}
 	}
-	else {
-		if ((caretStart == 0) && (caretEnd == 0)) {
+	else
+	{
+		if ((caretStart == 0) && (caretEnd == 0))
+		{
 			throw ExecuteActionException("Nothing to delete.");
 		}
 
 		// If there is nothing selected, select single char
-		if (caretStart == caretEnd) {
+		if (caretStart == caretEnd)
+		{
 			caretStart--;
 		}
 
@@ -71,7 +77,8 @@ void KeyDownAction::execute(const ActionContext & context)
 
 	ascii = 0;
 	const int len = ToAscii((UINT)virtualKey, (UINT)keyboardScanCode, keyboardState, &ascii, 0);
-	if (len == 0) {
+	if (len == 0)
+	{
 		ascii = (WORD)wParam; // Just take the key as is
 	}
 
@@ -80,7 +87,8 @@ void KeyDownAction::execute(const ActionContext & context)
 
 	// When there is a selection that we need to replace, execute a DEL key down first
 	// to delete selection and win the ability to undo that
-	if ((caretStart != caretEnd) && (virtualKey != VK_BACK) && (virtualKey != VK_DELETE)) {
+	if ((caretStart != caretEnd) && (virtualKey != VK_BACK) && (virtualKey != VK_DELETE))
+	{
 		ActionContext context(actionContext.getLParam(), (WPARAM)VK_DELETE);
 		PolynomialsApplication::getInstance().getActionExecutor()->execute(Action::KeyDown, context);
 		inputEdit->GetSel(caretStart, caretEnd);
@@ -95,16 +103,18 @@ void KeyDownAction::undo()
 	CEdit * inputEdit = PolynomialsApplication::getInstance().getInputTextControl();
 
 	// If it is not the backspace key or delete key, append text.
-	if ((virtualKey != VK_BACK) && (virtualKey != VK_DELETE)) {
+	if ((virtualKey != VK_BACK) && (virtualKey != VK_DELETE))
+	{
 		inputEdit->SetSel(caretStart, caretStart + 1);
 		inputEdit->Clear();
 	}
-	else {
+	else
+	{
 		inputEdit->SetSel(caretStart, caretEnd);
-		
+
 		// Insert the text at the caret position
 		inputEdit->ReplaceSel(text);
-		
+
 		delete text;
 		text = nullptr;
 	}

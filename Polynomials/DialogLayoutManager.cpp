@@ -25,7 +25,8 @@ void DialogLayoutManager::SetControl(CWnd *wnd, unsigned anchorFlags)
 	for (index = 0; index < count; index++)
 		if (ControlDescs[index].Wnd == wnd)
 			break;
-	if (index == count) {
+	if (index == count)
+	{
 		ControlDescs.push_back(SControlDesc());
 	}
 

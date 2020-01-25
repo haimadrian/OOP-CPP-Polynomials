@@ -26,7 +26,7 @@ private:
 
 protected:
 	IAction * clone();
-	
+
 public:
 	KeyDownAction() = default;
 	~KeyDownAction() = default;

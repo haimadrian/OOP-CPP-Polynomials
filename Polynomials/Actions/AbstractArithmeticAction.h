@@ -28,10 +28,12 @@ protected:
 	virtual std::wstring getActionName() = 0;
 	virtual char getActionOperator() = 0;
 
-	Polynomial getLeftPoly() {
+	Polynomial getLeftPoly()
+	{
 		return buildPolynomialFromList(actionContext.getSelectedPolyIndex());
 	}
-	Polynomial getRightPoly() {
+	Polynomial getRightPoly()
+	{
 		return buildPolynomialFromList(actionContext.getSelectedPolyIndex2());
 	}
 public:
@@ -39,14 +41,16 @@ public:
 	void undo();
 	void redo();
 
-	static Polynomial buildPolynomialFromList(int itemIndex) {
+	static Polynomial buildPolynomialFromList(int itemIndex)
+	{
 		CListCtrl * list = PolynomialsApplication::getInstance().getPolyListControl();
 
 		// Cannot fucking set const wchar* into out wchar*, so copy it manually...
 		std::wstring wstr = std::wstring(list->GetItemText(itemIndex, 0).GetString());
 		size_t length = wstr.length();
-		WCHAR * txt = new WCHAR[length + 1]{ 0 };
-		for (int i = 0; i < length; i++) {
+		WCHAR * txt = new WCHAR[length + 1] { 0 };
+		for (int i = 0; i < length; i++)
+		{
 			txt[i] = wstr[i];
 		}
 		txt = (WCHAR *)realloc(txt, (length + 2) * sizeof(WCHAR));

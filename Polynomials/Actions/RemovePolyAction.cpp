@@ -24,8 +24,9 @@ void RemovePolyAction::execute(const ActionContext & context)
 	// Cannot fucking set const wchar* into out wchar*, so copy it manually...
 	std::wstring str = std::wstring(list->GetItemText(actionContext.getSelectedPolyIndex(), 0).GetString());
 	size_t length = str.length();
-	text = new WCHAR[length + 1]{ 0 };
-	for (int i = 0; i < length; i++) {
+	text = new WCHAR[length + 1] { 0 };
+	for (int i = 0; i < length; i++)
+	{
 		text[i] = str[i];
 	}
 

@@ -14,7 +14,7 @@
 #include "afxdialogex.h"
 
 
-// GraphDialog dialog
+ // GraphDialog dialog
 
 IMPLEMENT_DYNAMIC(GraphDialog, CDialogEx)
 
@@ -40,7 +40,8 @@ END_MESSAGE_MAP()
 
 
 // GraphDialog message handlers
-BOOL GraphDialog::OnInitDialog() {
+BOOL GraphDialog::OnInitDialog()
+{
 	std::ostringstream out;
 	out << "Graph of:   " << polynomial;
 
@@ -54,7 +55,7 @@ BOOL GraphDialog::OnInitDialog() {
 
 void GraphDialog::OnPaint()
 {
-	CPaintDC dc(this); 
+	CPaintDC dc(this);
 
 	RECT windowRect;
 	GetClientRect(&windowRect);
@@ -68,7 +69,8 @@ void GraphDialog::OnPaint()
 	paintFunction(dc);
 }
 
-void GraphDialog::paintFunction(CPaintDC & dc) {
+void GraphDialog::paintFunction(CPaintDC & dc)
+{
 	RECT windowRect;
 	GetClientRect(&windowRect);
 
@@ -87,38 +89,48 @@ void GraphDialog::paintFunction(CPaintDC & dc) {
 	double divideBy = 1;
 
 	// In order to display a beutiful graph, normalize the function value
-	if (((maxDeg < 0) || (maxDeg > 1)) && (polynomial.getEffectiveCount() == 1)) {
+	if (((maxDeg < 0) || (maxDeg > 1)) && (polynomial.getEffectiveCount() == 1))
+	{
 		divideBy = ((maxDeg != 1) && (maxDeg != 2)) ? 30.0 : 10.0;
 	}
 
 	// Run over axis
-	for (int i = 0; i < windowRect.right; i++) {
+	for (int i = 0; i < windowRect.right; i++)
+	{
 		// Here we normalize the value of x in order to draw a more easier to see graph.
 		double x = ((double)i - middleHorizontal) / divideBy;
-		
+
 		// Be careful not to divide by zero.
 		// When we get to divide by zero, start filling in the other vector such that we will have
 		// two lines with a vertical asymptote
-		if ((minDeg >= 0) || (fabs(x) > 0.1)) {
+		if ((minDeg >= 0) || (fabs(x) > 0.1))
+		{
 			funcValue = polynomial(x);
 
-			if (abs(funcValue) < SHORT_MAX) {
-				if (!redirectToOptional) {
+			if (abs(funcValue) < SHORT_MAX)
+			{
+				if (!redirectToOptional)
+				{
 					actualPoints.push_back(CPoint(i, middleVertical - (int)funcValue));
-				} else {
+				}
+				else
+				{
 					// Define the "infinity" point of the line we are about to fill.
-					if (!isFirstOptionalMarked) {
+					if (!isFirstOptionalMarked)
+					{
 						x = ((double)i + 10 - middleHorizontal) / divideBy;
 						optionalActualPoints.push_back(CPoint(i, (funcValue < 0) ? windowRect.bottom : windowRect.top));
 						isFirstOptionalMarked = true;
 					}
-					else {
+					else
+					{
 						optionalActualPoints.push_back(CPoint(i, middleVertical - (int)funcValue));
 					}
 				}
 			}
 		}
-		else if (!redirectToOptional){
+		else if (!redirectToOptional)
+		{
 			// This means there are two lines.
 			redirectToOptional = true;
 
@@ -134,31 +146,36 @@ void GraphDialog::paintFunction(CPaintDC & dc) {
 	// Copy points to array, so we will pass it to the DC
 	size_t amountOfPoints = actualPoints.size();
 	CPoint * points = new CPoint[amountOfPoints];
-	for (size_t i = 0; i < amountOfPoints; i++) {
+	for (size_t i = 0; i < amountOfPoints; i++)
+	{
 		points[i] = actualPoints[i];
 	}
 
 	// In case there are two lines, add the second line to the array and use PolyPolyline instead of Polyline.
-	if (redirectToOptional) {
+	if (redirectToOptional)
+	{
 		size_t amountOfPoints2 = optionalActualPoints.size();
 		size_t newLen = amountOfPoints + amountOfPoints2;
 		points = (CPoint *)realloc(points, newLen * sizeof(CPoint));
 
-		for (size_t i = amountOfPoints; i < newLen; i++) {
+		for (size_t i = amountOfPoints; i < newLen; i++)
+		{
 			points[i] = optionalActualPoints[i - amountOfPoints];
 		}
 
 		DWORD  linesLength[2] = { (DWORD)amountOfPoints , (DWORD)amountOfPoints2 };
 		dc.PolyPolyline(points, linesLength, 2);
 	}
-	else {
+	else
+	{
 		dc.Polyline(points, (int)amountOfPoints);
 	}
 
 	delete points;
 }
 
-void GraphDialog::paintTableArea(CPaintDC & dc) {
+void GraphDialog::paintTableArea(CPaintDC & dc)
+{
 	RECT windowRect;
 	GetClientRect(&windowRect);
 
@@ -202,8 +219,8 @@ void GraphDialog::paintTableArea(CPaintDC & dc) {
 	dc.PolyPolyline(points, linesLength, amountOfLines);
 
 	CFont font;
-	font.CreateFontW(50, 20, 0, 0, FW_BOLD, FALSE, FALSE, FALSE, ANSI_CHARSET, 
-		OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, L"Microsoft Sans Serif");
+	font.CreateFontW(50, 20, 0, 0, FW_BOLD, FALSE, FALSE, FALSE, ANSI_CHARSET,
+					 OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, L"Microsoft Sans Serif");
 	dc.SelectObject(&font);
 
 	UINT txtParams = DT_VCENTER | DT_SINGLELINE | DS_CENTER | TRANSPARENT;

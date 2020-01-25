@@ -17,7 +17,7 @@ class CopyAction : public IAction
 {
 protected:
 	IAction * clone();
-	
+
 public:
 	CopyAction() = default;
 	~CopyAction() = default;

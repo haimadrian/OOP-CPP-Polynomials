@@ -17,12 +17,14 @@ IAction * SaveAction::clone()
 void SaveAction::execute(const ActionContext & context)
 {
 	std::ofstream f(context.getFilePath());
-	
-	try {
+
+	try
+	{
 		CListCtrl * list = PolynomialsApplication::getInstance().getPolyListControl();
 
 		int count = list->GetItemCount();
-		for (int i = 0; i < count; i++) {
+		for (int i = 0; i < count; i++)
+		{
 			Polynomial p = AbstractArithmeticAction::buildPolynomialFromList(i);
 			f << p << std::endl;
 		}
@@ -32,7 +34,8 @@ void SaveAction::execute(const ActionContext & context)
 		PolynomialsApplication::getInstance().getMainWindow()->logMessage(
 			std::wstring(L"Polynomials saved to file: ") + context.getFilePath());
 	}
-	catch (...) {
+	catch (...)
+	{
 		f.close(); // Make sure file is closed
 		throw ExecuteActionException("Error has occurred while writing polynomials to file");
 	}

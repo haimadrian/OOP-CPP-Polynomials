@@ -8,7 +8,8 @@
 #include <ostream>
 #include "AbstractArithmeticAction.h"
 
-void AbstractArithmeticAction::logArithmeticActionMessage(bool isRedo) {
+void AbstractArithmeticAction::logArithmeticActionMessage(bool isRedo)
+{
 	Polynomial leftPoly = AbstractArithmeticAction::buildPolynomialFromList(actionContext.getSelectedPolyIndex());
 	Polynomial rightPoly = AbstractArithmeticAction::buildPolynomialFromList(actionContext.getSelectedPolyIndex2());
 
@@ -22,8 +23,10 @@ void AbstractArithmeticAction::logArithmeticActionMessage(bool isRedo) {
 		std::wstring(isRedo ? L"Redo of " : L"") + getActionName() + L"Action: " + wstr + L" = ");
 }
 
-void AbstractArithmeticAction::innerDoExecute() {
-	try {
+void AbstractArithmeticAction::innerDoExecute()
+{
+	try
+	{
 		// Get new polynomial (result of arithmetic operation)
 		Polynomial p = doExecute();
 		std::ostringstream out;
@@ -36,10 +39,12 @@ void AbstractArithmeticAction::innerDoExecute() {
 		input->SetSel(0, input->GetWindowTextLengthW());
 		input->ReplaceSel(wstr.c_str());
 	}
-	catch (std::invalid_argument & e) {
+	catch (std::invalid_argument & e)
+	{
 		throw ExecuteActionException(e);
 	}
-	catch (std::overflow_error & e) {
+	catch (std::overflow_error & e)
+	{
 		throw ExecuteActionException(e);
 	}
 }

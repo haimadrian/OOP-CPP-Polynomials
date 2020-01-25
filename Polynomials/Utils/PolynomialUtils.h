@@ -10,10 +10,13 @@
 #ifndef POLYNOMIALS_POLYNOMIALUTILS_H
 #define POLYNOMIALS_POLYNOMIALUTILS_H
 
-class PolynomialUtils {
+class PolynomialUtils
+{
 public:
-	static bool isOperator(int character) {
-		switch (character) {
+	static bool isOperator(int character)
+	{
+		switch (character)
+		{
 			case '+':
 			case '-':
 			case '*':

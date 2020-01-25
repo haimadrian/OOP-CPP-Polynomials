@@ -14,7 +14,8 @@ IAction * AddAction::clone()
 	return result;
 }
 
-Polynomial AddAction::doExecute() {
+Polynomial AddAction::doExecute()
+{
 	Polynomial left = getLeftPoly();
 	Polynomial right = getRightPoly();
 

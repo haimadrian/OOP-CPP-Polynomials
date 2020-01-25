@@ -4,7 +4,7 @@
  * Final Project for OOP course at Holon Institute of Technology
  * 2019-2020
  */
- 
+
 #pragma once
 
 #ifndef POLYNOMIALS_POLYNOMIALSDLG_H
@@ -13,20 +13,31 @@
 #include "framework.h"
 #include "DialogLayoutManager.h"
 
-// CPolynomialsDlg dialog
+ // CPolynomialsDlg dialog
 class CPolynomialsDlg : public CDialogEx
 {
-// Construction
+	// Construction
 public:
 	CPolynomialsDlg(CWnd* pParent = nullptr);	// standard constructor
 	~CPolynomialsDlg();
 
-// Dialog Data
+	// Dialog Data
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_POLYNOMIALS_DIALOG };
 #endif
 
 private:
+	// Additional 1 is because accelerator treats shortcuts from 1, not 0.
+	static const int SHORTCUT_KEY_UNDO = 'z' - 'a' + 1;
+	static const int SHORTCUT_KEY_REDO = 'y' - 'a' + 1;
+	static const int SHORTCUT_KEY_OPEN = 'o' - 'a' + 1;
+	static const int SHORTCUT_KEY_SAVE = 's' - 'a' + 1;
+	static const int SHORTCUT_KEY_COPY = 'c' - 'a' + 1;
+	static const int SHORTCUT_KEY_PASTE = 'v' - 'a' + 1;
+	static const int SHORTCUT_KEY_GRAPH = 'g' - 'a' + 1;
+	static const int SHORTCUT_KEY_CALCULATE = 'e' - 'a' + 1;
+	static const int SHORTCUT_KEY_INSERT = 'i' - 'a' + 1;
+
 	void setCaption(const CString & caption);
 	void setUnsavedChangesState();
 	void removeUnsavedChangesState();
@@ -34,7 +45,7 @@ private:
 	bool canExecuteArithmeticAction();
 	void handleShortcut(int key);
 
-// Implementation
+	// Implementation
 protected:
 	HICON m_hIcon;
 	CString m_strCaption;

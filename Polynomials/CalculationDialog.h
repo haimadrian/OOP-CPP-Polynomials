@@ -14,7 +14,7 @@
 #include "framework.h"
 #include <string>
 
-// CalculationDialog dialog
+ // CalculationDialog dialog
 
 class CalculationDialog : public CDialogEx
 {
@@ -27,7 +27,7 @@ public:
 
 	double getXValue();
 
-// Dialog Data
+	// Dialog Data
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_CALCULATE_DIALOG };
 #endif

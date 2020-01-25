@@ -27,11 +27,13 @@ private:
 
 protected:
 	IAction * clone();
-	
+
 public:
-	PasteAction() :keyboardText(nullptr) {}
-	~PasteAction() {
-		if (keyboardText) {
+	PasteAction() :keyboardText(nullptr) { }
+	~PasteAction()
+	{
+		if (keyboardText)
+		{
 			delete keyboardText;
 		}
 	}

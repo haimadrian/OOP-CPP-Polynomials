@@ -13,7 +13,7 @@
 #include "framework.h"
 #include <string>
 
-// PolySelectionDialog dialog
+ // PolySelectionDialog dialog
 
 class PolySelectionDialog : public CDialogEx
 {
@@ -29,7 +29,7 @@ public:
 	int getLeftPolyIndex() const;
 	int getRightPolyIndex() const;
 
-// Dialog Data
+	// Dialog Data
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_SELECT_POLY };
 #endif

@@ -14,13 +14,13 @@
 #include "framework.h"
 #include <vector>
 
-/*
-Dialog Layout Manager for MFC
-Copyright 2009 Adam Sawicki
-E-mail: sawickiap(at)poczta(dot)onet(dot)pl
-Homepage: http://regedit.gamedev.pl/
-License: Public Domain
-*/
+ /*
+ Dialog Layout Manager for MFC
+ Copyright 2009 Adam Sawicki
+ E-mail: sawickiap(at)poczta(dot)onet(dot)pl
+ Homepage: http://regedit.gamedev.pl/
+ License: Public Domain
+ */
 class DialogLayoutManager
 {
 public:

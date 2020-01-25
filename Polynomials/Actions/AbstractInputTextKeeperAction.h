@@ -35,39 +35,46 @@ protected:
 		text = AbstractInputTextKeeperAction::getWholeText(inputEdit);
 	}
 
-	void clonePartial(AbstractInputTextKeeperAction * to) {
+	void clonePartial(AbstractInputTextKeeperAction * to)
+	{
 		to->actionContext = this->actionContext;
-		
+
 		int length = lstrlenW(this->text);
-		to->text = new WCHAR[length + 1]{ 0 };
+		to->text = new WCHAR[length + 1] { 0 };
 		StrCpyW(to->text, this->text);
 	}
 
 public:
-	AbstractInputTextKeeperAction():text(nullptr) {
+	AbstractInputTextKeeperAction() :text(nullptr)
+	{
 	}
 
-	~AbstractInputTextKeeperAction() {
-		if (text) {
+	~AbstractInputTextKeeperAction()
+	{
+		if (text)
+		{
 			delete text;
 		}
 	}
 
-	void execute(const ActionContext & context) throw(ExecuteActionException) {
+	void execute(const ActionContext & context) throw(ExecuteActionException)
+	{
 		actionContext = context;
 	}
 
-	static WCHAR * getSelectedText(CEdit * inputEdit) {
+	static WCHAR * getSelectedText(CEdit * inputEdit)
+	{
 		// Get text from edit control
-		WCHAR * tempText = new WCHAR[INPUT_MAX_LEN]{ 0 };
+		WCHAR * tempText = new WCHAR[INPUT_MAX_LEN] { 0 };
 		inputEdit->GetLine(0, tempText, INPUT_MAX_LEN);
 
 		int begin, end;
 		inputEdit->GetSel(begin, end);
 
 		// Copy selected text and then free the temporary reference.
-		WCHAR * txt = new WCHAR[end - begin + 1]{ 0 };
-		for (int i = begin; i < end; i++) {
+		WCHAR * txt = new WCHAR[end - begin + 1] { 0 };
+		for (int i = begin; i < end; i++)
+		{
 			txt[i - begin] = tempText[i];
 		}
 
@@ -75,13 +82,15 @@ public:
 		return txt;
 	}
 
-	static WCHAR * getWholeText(CEdit * inputEdit) {
+	static WCHAR * getWholeText(CEdit * inputEdit)
+	{
 		// Get text from edit control
-		WCHAR * tempText = new WCHAR[INPUT_MAX_LEN]{ 0 };
+		WCHAR * tempText = new WCHAR[INPUT_MAX_LEN] { 0 };
 		int length = inputEdit->GetLine(0, tempText, INPUT_MAX_LEN);
 
-		WCHAR * txt = new WCHAR[length + 1]{ 0 };
-		for (int i = 0; i < length; i++) {
+		WCHAR * txt = new WCHAR[length + 1] { 0 };
+		for (int i = 0; i < length; i++)
+		{
 			txt[i] = tempText[i];
 		}
 

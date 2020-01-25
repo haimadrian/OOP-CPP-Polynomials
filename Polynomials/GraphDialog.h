@@ -13,7 +13,7 @@
 
 #include "Model/Polynomial.h"
 
-// GraphDialog dialog
+ // GraphDialog dialog
 
 class GraphDialog : public CDialogEx
 {
@@ -23,10 +23,10 @@ private:
 	void paintTableArea(CPaintDC & dc);
 	void paintFunction(CPaintDC & dc);
 public:
-	GraphDialog(Polynomial & polynomial, CWnd* pParent = nullptr); 
+	GraphDialog(Polynomial & polynomial, CWnd* pParent = nullptr);
 	virtual ~GraphDialog();
 
-// Dialog Data
+	// Dialog Data
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_GRAPH_DIALOG };
 #endif

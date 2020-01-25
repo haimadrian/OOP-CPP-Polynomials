@@ -14,7 +14,7 @@
 #endif
 
 
-// CPolynomialsApp
+ // CPolynomialsApp
 
 BEGIN_MESSAGE_MAP(CPolynomialsApp, CWinApp)
 	ON_COMMAND(ID_HELP, &CWinApp::OnHelp)

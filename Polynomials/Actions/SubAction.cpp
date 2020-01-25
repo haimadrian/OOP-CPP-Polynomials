@@ -14,7 +14,8 @@ IAction * SubAction::clone()
 	return result;
 }
 
-Polynomial SubAction::doExecute() {
+Polynomial SubAction::doExecute()
+{
 	Polynomial left = getLeftPoly();
 	Polynomial right = getRightPoly();
 

@@ -14,20 +14,20 @@
 #include "framework.h"
 
 
-// CPolynomialsApp:
-// See Polynomials.cpp for the implementation of this class
-//
+ // CPolynomialsApp:
+ // See Polynomials.cpp for the implementation of this class
+ //
 
 class CPolynomialsApp : public CWinApp
 {
 public:
 	CPolynomialsApp();
 
-// Overrides
+	// Overrides
 public:
 	virtual BOOL InitInstance();
 
-// Implementation
+	// Implementation
 
 	DECLARE_MESSAGE_MAP()
 };

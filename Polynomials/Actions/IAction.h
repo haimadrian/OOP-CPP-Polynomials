@@ -14,7 +14,7 @@
 #include "ActionContext.h"
 #include "ExecuteActionException.h"
 
-// So all actions will have reference to these
+ // So all actions will have reference to these
 #include "../framework.h" 
 #include "../Model/Polynomial.h"
 #include "../Model/Monomial.h"
@@ -22,7 +22,8 @@
 
 class ActionExecutor;
 
-class IAction : public ICloneable<IAction *> {
+class IAction : public ICloneable<IAction *>
+{
 	friend class ActionExecutor;
 public:
 	virtual ~IAction() = default;
@@ -30,7 +31,8 @@ public:
 	virtual void execute(const ActionContext & context) throw(ExecuteActionException) = 0;
 };
 
-class IEditAction : public IAction {
+class IEditAction : public IAction
+{
 public:
 	virtual ~IEditAction() = default;
 	virtual void undo() = 0;

@@ -10,10 +10,10 @@
 
 #pragma once
 
-// CAboutDlg dialog
+ // CAboutDlg dialog
 class CAboutDlg : public CDialogEx
 {
-// Construction
+	// Construction
 public:
 	CAboutDlg(CWnd* pParent = nullptr);	// standard constructor
 
@@ -22,15 +22,13 @@ public:
 	enum { IDD = IDD_ABOUTBOX };
 #endif
 
-	protected:
+protected:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV support
 
 
 // Implementation
 protected:
 	DECLARE_MESSAGE_MAP()
-public:
-//	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 };
 
 #endif

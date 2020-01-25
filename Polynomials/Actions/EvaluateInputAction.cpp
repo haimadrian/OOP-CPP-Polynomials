@@ -17,7 +17,8 @@ IAction * EvaluateInputAction::clone()
 
 void EvaluateInputAction::doExecute(CEdit * input)
 {
-	try {
+	try
+	{
 		Polynomial p = EvaluateInputAction::buildPolynomialFromInputText();
 		std::ostringstream out;
 		out << p;
@@ -28,10 +29,12 @@ void EvaluateInputAction::doExecute(CEdit * input)
 		input->SetSel(0, input->GetWindowTextLengthW());
 		input->ReplaceSel(wstr.c_str());
 	}
-	catch (std::invalid_argument & e) {
+	catch (std::invalid_argument & e)
+	{
 		throw ExecuteActionException(e);
 	}
-	catch (std::overflow_error & e) {
+	catch (std::overflow_error & e)
+	{
 		throw ExecuteActionException(e);
 	}
 }
@@ -45,7 +48,8 @@ void EvaluateInputAction::execute(const ActionContext & context)
 
 	doExecute(input);
 
-	if (shouldLog) {
+	if (shouldLog)
+	{
 		PolynomialsApplication::getInstance().getMainWindow()->logMessageWithInputText(L"Evaluated polynomial: ");
 	}
 }
@@ -56,7 +60,8 @@ void EvaluateInputAction::undo()
 	input->SetSel(0, input->GetWindowTextLengthW());
 	input->ReplaceSel(text);
 
-	if (shouldLog) {
+	if (shouldLog)
+	{
 		PolynomialsApplication::getInstance().getMainWindow()->logMessage(L"Undo of EvaluateAction completed.");
 	}
 }
@@ -65,7 +70,8 @@ void EvaluateInputAction::redo()
 {
 	doExecute(PolynomialsApplication::getInstance().getInputTextControl());
 
-	if (shouldLog) {
+	if (shouldLog)
+	{
 		PolynomialsApplication::getInstance().getMainWindow()->logMessageWithInputText(L"Redo of EvaluateAction: ");
 	}
 }

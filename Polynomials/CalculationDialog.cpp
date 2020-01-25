@@ -10,7 +10,7 @@
 #include "afxdialogex.h"
 
 
-// CalculationDialog dialog
+ // CalculationDialog dialog
 
 IMPLEMENT_DYNAMIC(CalculationDialog, CDialogEx)
 
@@ -40,25 +40,30 @@ END_MESSAGE_MAP()
 
 void CalculationDialog::OnEnChangeEditxvalue()
 {
-	try {
+	try
+	{
 		CString val;
 		GetDlgItemText(IDC_EDITXVALUE, val);
 		std::wstring wstr(val.GetString());
 		xValue = atof(std::string(wstr.begin(), wstr.end()).c_str());
 	}
-	catch (...) {
+	catch (...)
+	{
 		AfxMessageBox(L"Illegal input. Only numbers are accepted.", MB_ICONERROR | MB_OK);
 		xValue = 0;
 		SetDlgItemText(IDC_EDITXVALUE, L"0");
 	}
 }
 
-double CalculationDialog::getXValue() {
+double CalculationDialog::getXValue()
+{
 	return xValue;
 }
 
-BOOL isNavigation(WPARAM key) {
-	switch (key) {
+BOOL isNavigation(WPARAM key)
+{
+	switch (key)
+	{
 		case VK_LEFT:
 		case VK_RIGHT:
 		case VK_UP:
@@ -80,15 +85,20 @@ BOOL isNavigation(WPARAM key) {
 
 BOOL CalculationDialog::PreTranslateMessage(MSG* pMsg)
 {
-	if (pMsg->message == WM_KEYDOWN) {
-		if (pMsg->wParam == VK_RETURN) {
+	if (pMsg->message == WM_KEYDOWN)
+	{
+		if (pMsg->wParam == VK_RETURN)
+		{
 			EndDialog(IDOK);
 			return TRUE;
 		}
-		else if (pMsg->wParam == VK_ESCAPE) {
+		else if (pMsg->wParam == VK_ESCAPE)
+		{
 			EndDialog(IDCANCEL);
 			return TRUE;
-		} else if (isNavigation(pMsg->wParam)) {
+		}
+		else if (isNavigation(pMsg->wParam))
+		{
 			return CDialogEx::PreTranslateMessage(pMsg);
 		}
 
@@ -102,17 +112,20 @@ BOOL CalculationDialog::PreTranslateMessage(MSG* pMsg)
 
 		WORD ascii = 0;
 		const int len = ToAscii((UINT)virtualKey, (UINT)keyboardScanCode, keyboardState, &ascii, 0);
-		if (len == 0) {
+		if (len == 0)
+		{
 			ascii = (WORD)wParam; // Just take the key as is
 		}
 
-		if (!(isdigit(ascii)) && (ascii != '-') && (ascii != '.')) {
+		if (!(isdigit(ascii)) && (ascii != '-') && (ascii != '.'))
+		{
 			AfxMessageBox(L"Illegal input. Only numbers are accepted.", MB_ICONERROR | MB_OK);
 			return TRUE;
 		}
-		else {
+		else
+		{
 			CEdit * edit = (CEdit *)GetDlgItem(IDC_EDITXVALUE);
-			WCHAR * text = new WCHAR[2]{ (WCHAR)ascii, '\0' };
+			WCHAR * text = new WCHAR[2] { (WCHAR)ascii, '\0' };
 			int length = edit->GetWindowTextLengthW();
 			edit->SetSel(length, length);
 			edit->ReplaceSel(text);

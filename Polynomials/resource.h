@@ -5,10 +5,10 @@
  * 2019-2020
  */
 
-//{{NO_DEPENDENCIES}}
-// Microsoft Visual C++ generated include file.
-// Used by Polynomials.rc
-//
+ //{{NO_DEPENDENCIES}}
+ // Microsoft Visual C++ generated include file.
+ // Used by Polynomials.rc
+ //
 #define IDD_ABOUTBOX                    100
 #define IDD_POLYNOMIALS_DIALOG          102
 #define IDI_MAIN_ICON                   129

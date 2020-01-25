@@ -20,7 +20,7 @@ private:
 	PolynomialsApplication(); // Hide CTOR for singleton
 
 	CPolynomialsDlg * mainWindow;
-	CEdit * inputTextControl, * console;
+	CEdit * inputTextControl, *console;
 	CListCtrl * polyListControl;
 	bool unsavedChanges;
 	ActionExecutor actionExecutor;

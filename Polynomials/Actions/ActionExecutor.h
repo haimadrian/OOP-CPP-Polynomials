@@ -18,7 +18,8 @@
 
 enum Action { Add, Calculate, Copy, Div, Evaluate, InsertPoly, KeyDown, Mul, Open, Paste, RemovePoly, Save, Sub };
 
-class ActionFactory {
+class ActionFactory
+{
 public:
 	static IAction * createAction(Action actionType);
 };

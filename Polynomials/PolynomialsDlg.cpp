@@ -26,11 +26,13 @@
 #endif
 
 
-void showGeneralErrorToUser() {
+void showGeneralErrorToUser()
+{
 	AfxMessageBox(L"Something went wrong... Sorry", MB_ICONERROR | MB_OK);
 }
 
-void showExceptionMessageToUser(std::exception & e) {
+void showExceptionMessageToUser(std::exception & e)
+{
 	WCHAR * text = StringUtils::charToWCHAR(e.what());
 	AfxMessageBox(text, MB_ICONERROR | MB_OK);
 	delete text;
@@ -47,12 +49,15 @@ CPolynomialsDlg::CPolynomialsDlg(CWnd* pParent /*=nullptr*/)
 	m_layoutManager = new DialogLayoutManager;
 }
 
-CPolynomialsDlg::~CPolynomialsDlg() {
+CPolynomialsDlg::~CPolynomialsDlg()
+{
 	freeLayoutManager();
 }
 
-void CPolynomialsDlg::freeLayoutManager() {
-	if (m_layoutManager) {
+void CPolynomialsDlg::freeLayoutManager()
+{
+	if (m_layoutManager)
+	{
 		delete m_layoutManager;
 		m_layoutManager = nullptr;
 	}
@@ -123,7 +128,8 @@ BOOL CPolynomialsDlg::OnInitDialog()
 	//SetIcon(m_hIcon, FALSE);		// Set small icon
 
 	// Set anchors
-	if (m_layoutManager) {
+	if (m_layoutManager)
+	{
 		m_layoutManager->SetControl(GetDlgItem(IDC_PolynomialsList), DialogLayoutManager::ANCHOR_LEFT | DialogLayoutManager::ANCHOR_RIGHT | DialogLayoutManager::ANCHOR_TOP);
 		m_layoutManager->SetControl(GetDlgItem(IDC_MFCBUTTONINSERT), DialogLayoutManager::ANCHOR_RIGHT | DialogLayoutManager::ANCHOR_TOP);
 		m_layoutManager->SetControl(GetDlgItem(IDC_MFCBUTTONREMOVE), DialogLayoutManager::ANCHOR_RIGHT | DialogLayoutManager::ANCHOR_TOP);
@@ -174,17 +180,20 @@ BOOL CPolynomialsDlg::OnInitDialog()
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
 
-void CPolynomialsDlg::setCaption(const CString & caption) {
+void CPolynomialsDlg::setCaption(const CString & caption)
+{
 	m_strCaption = caption;
 	SetWindowText(m_strCaption);
 }
 
-void CPolynomialsDlg::setUnsavedChangesState() {
+void CPolynomialsDlg::setUnsavedChangesState()
+{
 	PolynomialsApplication::getInstance().setUnsavedChanges(true);
 	setCaption(L"* Polynomials");
 }
 
-void CPolynomialsDlg::removeUnsavedChangesState() {
+void CPolynomialsDlg::removeUnsavedChangesState()
+{
 	PolynomialsApplication::getInstance().setUnsavedChanges(false);
 	setCaption(L"Polynomials");
 }
@@ -192,7 +201,7 @@ void CPolynomialsDlg::removeUnsavedChangesState() {
 void CPolynomialsDlg::logMessage(const std::wstring & message)
 {
 	CEdit * edit = (CEdit *)GetDlgItem(IDC_CONSOLE);
-	
+
 	time_t rawtime;
 	struct tm timeinfo;
 	char buffer[128];
@@ -217,8 +226,10 @@ void CPolynomialsDlg::logMessageWithInputText(const std::wstring & message)
 	delete txt;
 }
 
-BOOL isNavigationKey(WPARAM key) {
-	switch (key) {
+BOOL isNavigationKey(WPARAM key)
+{
+	switch (key)
+	{
 		case VK_LEFT:
 		case VK_RIGHT:
 		case VK_UP:
@@ -236,38 +247,50 @@ BOOL isNavigationKey(WPARAM key) {
 	}
 }
 
-void redirectMessage(HWND sender, MSG* pMsg) {
-	if (sender != pMsg->hwnd) {
+void redirectMessage(HWND sender, MSG* pMsg)
+{
+	if (sender != pMsg->hwnd)
+	{
 		SendMessage(pMsg->hwnd, pMsg->message, pMsg->wParam, pMsg->lParam);
 	}
 }
 
-void CPolynomialsDlg::handleShortcut(int key) {
-	if (key == ('z' - 'a' + 1)) {
+void CPolynomialsDlg::handleShortcut(int key)
+{
+	if (key == SHORTCUT_KEY_UNDO)
+	{
 		OnEditUndo();
 	}
-	else if (key == ('y' - 'a' + 1)) {
+	else if (key == SHORTCUT_KEY_REDO)
+	{
 		OnEditRedo();
 	}
-	else if (key == ('o' - 'a' + 1)) {
+	else if (key == SHORTCUT_KEY_OPEN)
+	{
 		OnFileOpen();
 	}
-	else if (key == ('s' - 'a' + 1)) {
+	else if (key == SHORTCUT_KEY_SAVE)
+	{
 		OnFileSave();
 	}
-	else if (key == ('c' - 'a' + 1)) {
+	else if (key == SHORTCUT_KEY_COPY)
+	{
 		OnEditCopy();
 	}
-	else if (key == ('v' - 'a' + 1)) {
+	else if (key == SHORTCUT_KEY_PASTE)
+	{
 		OnEditPaste();
 	}
-	else if (key == ('g' - 'a' + 1)) {
+	else if (key == SHORTCUT_KEY_GRAPH)
+	{
 		OnEditGraph();
 	}
-	else if (key == ('e' - 'a' + 1)) {
+	else if (key == SHORTCUT_KEY_CALCULATE)
+	{
 		OnEditCalculate();
 	}
-	else if (key == ('i' - 'a' + 1)) {
+	else if (key == SHORTCUT_KEY_INSERT)
+	{
 		OnBnClickedMfcbuttoninsert();
 	}
 }
@@ -285,29 +308,38 @@ BOOL CPolynomialsDlg::PreTranslateMessage(MSG* pMsg)
 		}
 	}
 
-	try {
+	try
+	{
 		// Globally catch key down message to redirect it to the input.
 		if (pMsg->message == WM_KEYDOWN)
 		{
-			if (pMsg->wParam == VK_RETURN) {
+			if (pMsg->wParam == VK_RETURN)
+			{
 				OnBnClickedMfcbuttoneq();
 				return TRUE;
 			}
 
 			// Do not redirect event if sender is the console or list control, to let user copy text.
-			if (pMsg->hwnd != GetDlgItem(IDC_CONSOLE)->GetSafeHwnd()) {
+			if (pMsg->hwnd != GetDlgItem(IDC_CONSOLE)->GetSafeHwnd())
+			{
 				// If it is a navigation key, and current handle is the input edit, redirect it
-				if (!isNavigationKey(pMsg->wParam)) {
+				if (!isNavigationKey(pMsg->wParam))
+				{
 					// When input edit is in focus, and a shortcut is pressed, it is being dismissed
 					// for some reason.. Handle it manually here.
-					if (GetAsyncKeyState(VK_CONTROL)) {
+					if (GetAsyncKeyState(VK_CONTROL))
+					{
 						handleShortcut(tolower((int)pMsg->wParam) - 'a' + 1);
-					} else {
-						try {
+					}
+					else
+					{
+						try
+						{
 							ActionContext context(pMsg->lParam, pMsg->wParam);
 							PolynomialsApplication::getInstance().getActionExecutor()->execute(Action::KeyDown, context);
 						}
-						catch (ExecuteActionException & e) {
+						catch (ExecuteActionException & e)
+						{
 							showExceptionMessageToUser(e);
 						}
 					}
@@ -316,12 +348,14 @@ BOOL CPolynomialsDlg::PreTranslateMessage(MSG* pMsg)
 				}
 			}
 		}
-		else if ((pMsg->message == WM_RBUTTONDOWN) || (pMsg->message == WM_RBUTTONUP)) {
+		else if ((pMsg->message == WM_RBUTTONDOWN) || (pMsg->message == WM_RBUTTONUP))
+		{
 			// Ignore it so user cannot open CEdit right click menu
 			return TRUE;
 		}
 	}
-	catch (...) {
+	catch (...)
+	{
 		showGeneralErrorToUser();
 	}
 
@@ -378,16 +412,20 @@ HCURSOR CPolynomialsDlg::OnQueryDragIcon()
 }
 
 
-void CPolynomialsDlg::OnUpdateEditUndo(CCmdUI* pCmdUI) {
+void CPolynomialsDlg::OnUpdateEditUndo(CCmdUI* pCmdUI)
+{
 	pCmdUI->Enable(PolynomialsApplication::getInstance().getActionExecutor()->canUndo() ? TRUE : FALSE);
 }
 
-void CPolynomialsDlg::OnUpdateEditRedo(CCmdUI* pCmdUI) {
+void CPolynomialsDlg::OnUpdateEditRedo(CCmdUI* pCmdUI)
+{
 	pCmdUI->Enable(PolynomialsApplication::getInstance().getActionExecutor()->canRedo() ? TRUE : FALSE);
 }
 
-void CPolynomialsDlg::OnFileOpen() {
-	try {
+void CPolynomialsDlg::OnFileOpen()
+{
+	try
+	{
 		bool canContinue = false;
 
 		// If there are unsaved changes, prompt to ask user if he wants to exit without saving.
@@ -396,138 +434,174 @@ void CPolynomialsDlg::OnFileOpen() {
 			int answer = AfxMessageBox(L"There are unsaved changes. Are you sure you want to open another list?", MB_ICONEXCLAMATION | MB_YESNO);
 			canContinue = (answer == IDYES);
 		}
-		else {
+		else
+		{
 			canContinue = true;
 		}
 
-		if (canContinue) {
+		if (canContinue)
+		{
 			char strFilter[] = { "Text Files (*.txt)|*.txt|" };
 			BOOL isOpen = TRUE;
 			DWORD fileDlgFlags = OFN_HIDEREADONLY;
 			CFileDialog openFileDlg(isOpen, CString(".txt"), NULL, fileDlgFlags, CString(strFilter), this);
 
 			INT_PTR result = openFileDlg.DoModal();
-			if (result == IDOK) {
+			if (result == IDOK)
+			{
 				CString fileName = openFileDlg.GetFileName();
 				CString folderPath = openFileDlg.GetFolderPath();
 
 				std::wstring filePath = std::wstring(folderPath.GetString()) + L"\\" + std::wstring(fileName.GetString());
 
-				try {
+				try
+				{
 					PolynomialsApplication::getInstance().getActionExecutor()->execute(Action::Open, ActionContext(filePath));
 					removeUnsavedChangesState();
 				}
-				catch (ExecuteActionException & e) {
+				catch (ExecuteActionException & e)
+				{
 					showExceptionMessageToUser(e);
 				}
 			}
 		}
 	}
-	catch (...) {
+	catch (...)
+	{
 		showGeneralErrorToUser();
 	}
 }
 
-void CPolynomialsDlg::OnFileSave() {
-	try {
+void CPolynomialsDlg::OnFileSave()
+{
+	try
+	{
 		char strFilter[] = { "Text Files (*.txt)|*.txt|" };
 		BOOL isOpen = FALSE;
 		DWORD fileDlgFlags = OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT;
 		CFileDialog saveFileDlg(isOpen, CString(".txt"), NULL, fileDlgFlags, CString(strFilter), this);
 
 		INT_PTR result = saveFileDlg.DoModal();
-		if (result == IDOK) {
+		if (result == IDOK)
+		{
 			CString fileName = saveFileDlg.GetFileName();
 			CString folderPath = saveFileDlg.GetFolderPath();
 
 			std::wstring filePath = std::wstring(folderPath.GetString()) + L"\\" + std::wstring(fileName.GetString());
 
-			try {
+			try
+			{
 				PolynomialsApplication::getInstance().getActionExecutor()->execute(Action::Save, ActionContext(filePath));
 				removeUnsavedChangesState();
 			}
-			catch (ExecuteActionException & e) {
+			catch (ExecuteActionException & e)
+			{
 				showExceptionMessageToUser(e);
 			}
 		}
 	}
-	catch (...) {
+	catch (...)
+	{
 		showGeneralErrorToUser();
 	}
 }
 
-void CPolynomialsDlg::OnFileQuit() {
+void CPolynomialsDlg::OnFileQuit()
+{
 	SendMessage(WM_CLOSE);
 }
 
-void CPolynomialsDlg::OnEditCopy() {
-	try {
+void CPolynomialsDlg::OnEditCopy()
+{
+	try
+	{
 		PolynomialsApplication::getInstance().getActionExecutor()->execute(Action::Copy);
 	}
-	catch (ExecuteActionException & e) {
+	catch (ExecuteActionException & e)
+	{
 		showExceptionMessageToUser(e);
 	}
-	catch (...) {
+	catch (...)
+	{
 		showGeneralErrorToUser();
 	}
 }
 
-void CPolynomialsDlg::OnEditPaste() {
-	try {
+void CPolynomialsDlg::OnEditPaste()
+{
+	try
+	{
 		PolynomialsApplication::getInstance().getActionExecutor()->execute(Action::Paste);
 	}
-	catch (ExecuteActionException & e) {
+	catch (ExecuteActionException & e)
+	{
 		showExceptionMessageToUser(e);
 	}
-	catch (...) {
+	catch (...)
+	{
 		showGeneralErrorToUser();
 	}
 }
 
-void CPolynomialsDlg::OnEditUndo() {
-	try {
-		if (PolynomialsApplication::getInstance().getActionExecutor()->canUndo()) {
+void CPolynomialsDlg::OnEditUndo()
+{
+	try
+	{
+		if (PolynomialsApplication::getInstance().getActionExecutor()->canUndo())
+		{
 			PolynomialsApplication::getInstance().getActionExecutor()->undo();
 		}
-		else {
+		else
+		{
 			logMessage(L"There is nothing to undo.");
 		}
 	}
-	catch (...) {
+	catch (...)
+	{
 		showGeneralErrorToUser();
 	}
 }
 
-void CPolynomialsDlg::OnEditRedo() {
-	try {
-		if (PolynomialsApplication::getInstance().getActionExecutor()->canRedo()) {
+void CPolynomialsDlg::OnEditRedo()
+{
+	try
+	{
+		if (PolynomialsApplication::getInstance().getActionExecutor()->canRedo())
+		{
 			PolynomialsApplication::getInstance().getActionExecutor()->redo();
 		}
-		else {
+		else
+		{
 			logMessage(L"There is nothing to redo.");
 		}
 	}
-	catch (...) {
+	catch (...)
+	{
 		showGeneralErrorToUser();
 	}
 }
 
-bool CPolynomialsDlg::canExecuteArithmeticAction() {
+bool CPolynomialsDlg::canExecuteArithmeticAction()
+{
 	bool isPossible = ((CListCtrl *)GetDlgItem(IDC_PolynomialsList))->GetItemCount() > 0;
 
-	if (!isPossible) {
+	if (!isPossible)
+	{
 		AfxMessageBox(L"Unable to execute arithmetic actions. Insert polynomials to the list first.", MB_ICONASTERISK | MB_OK);
 	}
 
 	return isPossible;
 }
 
-void CPolynomialsDlg::OnEditAdd() {
-	if (!canExecuteArithmeticAction()) {
+void CPolynomialsDlg::OnEditAdd()
+{
+	if (!canExecuteArithmeticAction())
+	{
 		return;
 	}
 
-	try {
+	try
+	{
 		PolySelectionDialog dlg(1, ((CListCtrl *)GetDlgItem(IDC_PolynomialsList))->GetItemCount(), L"Add", this);
 		INT_PTR response = dlg.DoModal();
 		if (response == IDOK)
@@ -535,25 +609,31 @@ void CPolynomialsDlg::OnEditAdd() {
 			int left = dlg.getLeftPolyIndex() - 1;
 			int right = dlg.getRightPolyIndex() - 1;
 
-			try {
+			try
+			{
 				PolynomialsApplication::getInstance().getActionExecutor()->execute(Action::Add, ActionContext(left, right));
 			}
-			catch (ExecuteActionException & e) {
+			catch (ExecuteActionException & e)
+			{
 				showExceptionMessageToUser(e);
 			}
 		}
 	}
-	catch (...) {
+	catch (...)
+	{
 		showGeneralErrorToUser();
 	}
 }
 
-void CPolynomialsDlg::OnEditSub() {
-	if (!canExecuteArithmeticAction()) {
+void CPolynomialsDlg::OnEditSub()
+{
+	if (!canExecuteArithmeticAction())
+	{
 		return;
 	}
 
-	try {
+	try
+	{
 		PolySelectionDialog dlg(1, ((CListCtrl *)GetDlgItem(IDC_PolynomialsList))->GetItemCount(), L"Sub", this);
 		INT_PTR response = dlg.DoModal();
 		if (response == IDOK)
@@ -561,25 +641,31 @@ void CPolynomialsDlg::OnEditSub() {
 			int left = dlg.getLeftPolyIndex() - 1;
 			int right = dlg.getRightPolyIndex() - 1;
 
-			try {
+			try
+			{
 				PolynomialsApplication::getInstance().getActionExecutor()->execute(Action::Sub, ActionContext(left, right));
 			}
-			catch (ExecuteActionException & e) {
+			catch (ExecuteActionException & e)
+			{
 				showExceptionMessageToUser(e);
 			}
 		}
 	}
-	catch (...) {
+	catch (...)
+	{
 		showGeneralErrorToUser();
 	}
 }
 
-void CPolynomialsDlg::OnEditMul() {
-	if (!canExecuteArithmeticAction()) {
+void CPolynomialsDlg::OnEditMul()
+{
+	if (!canExecuteArithmeticAction())
+	{
 		return;
 	}
 
-	try {
+	try
+	{
 		PolySelectionDialog dlg(1, ((CListCtrl *)GetDlgItem(IDC_PolynomialsList))->GetItemCount(), L"Mul", this);
 		INT_PTR response = dlg.DoModal();
 		if (response == IDOK)
@@ -587,25 +673,31 @@ void CPolynomialsDlg::OnEditMul() {
 			int left = dlg.getLeftPolyIndex() - 1;
 			int right = dlg.getRightPolyIndex() - 1;
 
-			try {
+			try
+			{
 				PolynomialsApplication::getInstance().getActionExecutor()->execute(Action::Mul, ActionContext(left, right));
 			}
-			catch (ExecuteActionException & e) {
+			catch (ExecuteActionException & e)
+			{
 				showExceptionMessageToUser(e);
 			}
 		}
 	}
-	catch (...) {
+	catch (...)
+	{
 		showGeneralErrorToUser();
 	}
 }
 
-void CPolynomialsDlg::OnEditDiv() {
-	if (!canExecuteArithmeticAction()) {
+void CPolynomialsDlg::OnEditDiv()
+{
+	if (!canExecuteArithmeticAction())
+	{
 		return;
 	}
 
-	try {
+	try
+	{
 		PolySelectionDialog dlg(1, ((CListCtrl *)GetDlgItem(IDC_PolynomialsList))->GetItemCount(), L"Div", this);
 		INT_PTR response = dlg.DoModal();
 		if (response == IDOK)
@@ -613,67 +705,83 @@ void CPolynomialsDlg::OnEditDiv() {
 			int left = dlg.getLeftPolyIndex() - 1;
 			int right = dlg.getRightPolyIndex() - 1;
 
-			try {
+			try
+			{
 				PolynomialsApplication::getInstance().getActionExecutor()->execute(Action::Div, ActionContext(left, right));
 			}
-			catch (ExecuteActionException & e) {
+			catch (ExecuteActionException & e)
+			{
 				showExceptionMessageToUser(e);
 			}
 		}
 	}
-	catch (...) {
+	catch (...)
+	{
 		showGeneralErrorToUser();
 	}
 }
 
-void CPolynomialsDlg::OnEditCalculate() {
-	try {
+void CPolynomialsDlg::OnEditCalculate()
+{
+	try
+	{
 		CListCtrl * list = (CListCtrl *)GetDlgItem(IDC_PolynomialsList);
 		int selectedIndex = list->GetSelectionMark();
 
-		if (selectedIndex >= 0) {
+		if (selectedIndex >= 0)
+		{
 			CalculationDialog dlg(this);
 			INT_PTR response = dlg.DoModal();
 			if (response == IDOK)
 			{
 				double xValue = dlg.getXValue();
 
-				try {
+				try
+				{
 					PolynomialsApplication::getInstance().getActionExecutor()->execute(Action::Calculate, ActionContext(selectedIndex, xValue));
 				}
-				catch (ExecuteActionException & e) {
+				catch (ExecuteActionException & e)
+				{
 					showExceptionMessageToUser(e);
 				}
 			}
 		}
-		else {
+		else
+		{
 			AfxMessageBox(L"Please select a polynomial first.", MB_ICONINFORMATION | MB_OK);
 		}
 	}
-	catch (...) {
+	catch (...)
+	{
 		showGeneralErrorToUser();
 	}
 }
 
-void CPolynomialsDlg::OnEditGraph() {
-	try {
+void CPolynomialsDlg::OnEditGraph()
+{
+	try
+	{
 		CListCtrl * list = (CListCtrl *)GetDlgItem(IDC_PolynomialsList);
 		int selectedIndex = list->GetSelectionMark();
 
-		if (selectedIndex >= 0) {
+		if (selectedIndex >= 0)
+		{
 			GraphDialog dlg(AbstractArithmeticAction::buildPolynomialFromList(selectedIndex), this);
 			dlg.DoModal();
 		}
-		else {
+		else
+		{
 			AfxMessageBox(L"Please select a polynomial first.", MB_ICONINFORMATION | MB_OK);
 		}
 	}
-	catch (...) {
+	catch (...)
+	{
 		showGeneralErrorToUser();
 	}
 }
 
-void CPolynomialsDlg::OnHelpAbout() {
+void CPolynomialsDlg::OnHelpAbout()
+{
 	CAboutDlg dlgAbout;
 	dlgAbout.DoModal();
 }
@@ -682,7 +790,7 @@ void CPolynomialsDlg::OnHelpAbout() {
 void CPolynomialsDlg::OnClose()
 {
 	// If there are unsaved changes, prompt to ask user if he wants to exit without saving.
-	if (PolynomialsApplication::getInstance().anyUnsavedChanges()) 
+	if (PolynomialsApplication::getInstance().anyUnsavedChanges())
 	{
 		int answer = AfxMessageBox(L"There are unsaved changes. Are you sure you want to exit?", MB_ICONEXCLAMATION | MB_YESNO);
 
@@ -698,7 +806,7 @@ void CPolynomialsDlg::OnClose()
 		}
 	}
 	// If there is nothing to save, just exit.
-	else 
+	else
 	{
 		freeLayoutManager();
 		CDialogEx::OnClose();
@@ -710,12 +818,14 @@ void CPolynomialsDlg::OnSize(UINT nType, int cx, int cy)
 	CDialogEx::OnSize(nType, cx, cy);
 
 	// Restore layout only after window initialized and components location is saved in layout manager.
-	if (m_layoutManager && m_layoutManager->IsSaved()) {
+	if (m_layoutManager && m_layoutManager->IsSaved())
+	{
 		m_layoutManager->Restore(this);
 	}
 
 	CListCtrl * list = (CListCtrl *)GetDlgItem(IDC_PolynomialsList);
-	if (list) {
+	if (list)
+	{
 		list->SetColumnWidth(0, LVSCW_AUTOSIZE_USEHEADER);
 	}
 }
@@ -913,28 +1023,33 @@ void CPolynomialsDlg::OnBnClickedMfcbuttondel()
 
 void CPolynomialsDlg::OnBnClickedMfcbuttonclear()
 {
-	try {
+	try
+	{
 		// Select all text
 		CEdit * edit = (CEdit *)GetDlgItem(IDC_INPUT_TEXT);
 		edit->SetSel(0, edit->GetWindowTextLengthW());
 
 		// Generate a DELETE message so it will be handled as an edit action
 		OnBnClickedMfcbuttondel();
-	} 
-	catch (...) {
+	}
+	catch (...)
+	{
 		showGeneralErrorToUser();
 	}
 }
 
 void CPolynomialsDlg::OnBnClickedMfcbuttoneq()
 {
-	try {
+	try
+	{
 		PolynomialsApplication::getInstance().getActionExecutor()->execute(Action::Evaluate);
 	}
-	catch (ExecuteActionException & e) {
+	catch (ExecuteActionException & e)
+	{
 		showExceptionMessageToUser(e);
 	}
-	catch (...) {
+	catch (...)
+	{
 		showGeneralErrorToUser();
 	}
 }
@@ -942,14 +1057,17 @@ void CPolynomialsDlg::OnBnClickedMfcbuttoneq()
 
 void CPolynomialsDlg::OnBnClickedMfcbuttoninsert()
 {
-	try {
+	try
+	{
 		PolynomialsApplication::getInstance().getActionExecutor()->execute(Action::InsertPoly);
 		setUnsavedChangesState();
 	}
-	catch (ExecuteActionException & e) {
+	catch (ExecuteActionException & e)
+	{
 		showExceptionMessageToUser(e);
 	}
-	catch (...) {
+	catch (...)
+	{
 		showGeneralErrorToUser();
 	}
 }
@@ -957,24 +1075,30 @@ void CPolynomialsDlg::OnBnClickedMfcbuttoninsert()
 
 void CPolynomialsDlg::OnBnClickedMfcbuttonremove()
 {
-	try {
+	try
+	{
 		CListCtrl * list = (CListCtrl *)GetDlgItem(IDC_PolynomialsList);
 		int selectedIndex = list->GetSelectionMark();
 
-		if (selectedIndex >= 0) {
-			try {
+		if (selectedIndex >= 0)
+		{
+			try
+			{
 				PolynomialsApplication::getInstance().getActionExecutor()->execute(Action::RemovePoly, ActionContext(selectedIndex));
 				setUnsavedChangesState();
 			}
-			catch (ExecuteActionException & e) {
+			catch (ExecuteActionException & e)
+			{
 				showExceptionMessageToUser(e);
 			}
 		}
-		else {
+		else
+		{
 			AfxMessageBox(L"Please select a polynomial first.", MB_ICONINFORMATION | MB_OK);
 		}
 	}
-	catch (...) {
+	catch (...)
+	{
 		showGeneralErrorToUser();
 	}
 }

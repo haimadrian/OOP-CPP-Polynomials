@@ -25,5 +25,4 @@ void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
-//	ON_WM_ERASEBKGND()
 END_MESSAGE_MAP()
