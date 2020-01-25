@@ -258,6 +258,15 @@ void CPolynomialsDlg::handleShortcut(int key) {
 	else if (key == ('v' - 'a' + 1)) {
 		OnEditPaste();
 	}
+	else if (key == ('g' - 'a' + 1)) {
+		OnEditGraph();
+	}
+	else if (key == ('e' - 'a' + 1)) {
+		OnEditCalculate();
+	}
+	else if (key == ('i' - 'a' + 1)) {
+		OnBnClickedMfcbuttoninsert();
+	}
 }
 
 

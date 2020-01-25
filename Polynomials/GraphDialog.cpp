@@ -76,7 +76,7 @@ void GraphDialog::paintFunction(CPaintDC & dc) {
 
 	// If x=0 is illegal, e.g. 1/x, we separate the graph to 2.
 	std::vector<CPoint> optionalActualPoints;
-	bool redirectToOptional = false;
+	bool redirectToOptional = false, isFirstOptionalMarked = false;
 
 	double maxDeg = polynomial.getMaxEffectiveDegree();
 	double minDeg = polynomial.getMinEffectiveDegree();
@@ -102,21 +102,24 @@ void GraphDialog::paintFunction(CPaintDC & dc) {
 				if (!redirectToOptional) {
 					actualPoints.push_back(CPoint(i, middleVertical - (int)funcValue));
 				} else {
-					optionalActualPoints.push_back(CPoint(i, middleVertical - (int)funcValue));
+					// Define the "infinity" point of the line we are about to fill.
+					if (!isFirstOptionalMarked) {
+						x = ((double)i + 10 - middleHorizontal) / divideBy;
+						optionalActualPoints.push_back(CPoint(i, (funcValue < 0) ? windowRect.bottom : windowRect.top));
+						isFirstOptionalMarked = true;
+					}
+					else {
+						optionalActualPoints.push_back(CPoint(i, middleVertical - (int)funcValue));
+					}
 				}
 			}
 		}
-		else {
+		else if (!redirectToOptional){
 			// This means there are two lines.
 			redirectToOptional = true;
 
 			// Define the "infinity" point for the line we fill so far.
-			x = ((double)i - 10 - middleHorizontal) / divideBy;
-			actualPoints.push_back(CPoint(i - 1, (polynomial(x) < 0) ? windowRect.bottom : windowRect.top));
-
-			// Define the "infinity" point of the line we are about to fill.
-			x = ((double)i + 10 - middleHorizontal) / divideBy;
-			optionalActualPoints.push_back(CPoint(i + 1, (polynomial(x) < 0) ? windowRect.bottom : windowRect.top));
+			actualPoints.push_back(CPoint(i - 1, (funcValue < 0) ? windowRect.bottom : windowRect.top));
 		}
 	}
 

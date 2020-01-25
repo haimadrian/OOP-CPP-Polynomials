@@ -14,10 +14,6 @@ DialogLayoutManager::~DialogLayoutManager()
 
 void DialogLayoutManager::SetControl(CWnd *wnd, unsigned anchorFlags)
 {
-	assert((anchorFlags & ANCHOR_LEFT) != 0 || (anchorFlags & ANCHOR_RIGHT) != 0);
-	assert((anchorFlags & ANCHOR_TOP) != 0 || (anchorFlags & ANCHOR_BOTTOM) != 0);
-	assert(wnd != NULL);
-
 	size_t count = ControlDescs.size();
 	size_t index;
 	for (index = 0; index < count; index++)
@@ -52,8 +48,6 @@ void DialogLayoutManager::RemoveControl(CWnd *wnd)
 
 void DialogLayoutManager::Save(CWnd *parentWindow)
 {
-	assert(parentWindow);
-
 	RECT wndClientRect;
 	parentWindow->GetClientRect(&wndClientRect);
 	SavedClientSizeX = wndClientRect.right - wndClientRect.left;
@@ -69,9 +63,6 @@ void DialogLayoutManager::Save(CWnd *parentWindow)
 
 void DialogLayoutManager::Restore(CWnd *parentWindow)
 {
-	assert(parentWindow);
-	assert(SavedClientSizeX != -1);
-
 	RECT wndClientRect;
 	parentWindow->GetClientRect(&wndClientRect);
 	int newClientSizeX = wndClientRect.right - wndClientRect.left;
