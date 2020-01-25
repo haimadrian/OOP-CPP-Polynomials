@@ -1,6 +1,9 @@
-//
-// Created by Haim Adrian on 05-Jan-20.
-//
+/*
+ * Polynomials Calculator and Graph Drawing
+ * Created By: Haim Adrian
+ * Final Project for OOP course at Holon Institute of Technology
+ * 2019-2020
+ */
 
 #ifndef POLYNOMIALS_IPRINTABLE_H
 #define POLYNOMIALS_IPRINTABLE_H

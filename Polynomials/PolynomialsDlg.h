@@ -1,11 +1,14 @@
-
-// PolynomialsDlg.h : header file
-//
+/*
+ * Polynomials Calculator and Graph Drawing
+ * Created By: Haim Adrian
+ * Final Project for OOP course at Holon Institute of Technology
+ * 2019-2020
+ */
+ 
+#pragma once
 
 #ifndef POLYNOMIALS_POLYNOMIALSDLG_H
 #define POLYNOMIALS_POLYNOMIALSDLG_H
-
-#pragma once
 
 #include "framework.h"
 #include "DialogLayoutManager.h"

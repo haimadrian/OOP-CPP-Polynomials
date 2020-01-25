@@ -1,6 +1,9 @@
-
-// AboutDlg.h : header file
-//
+/*
+ * Polynomials Calculator and Graph Drawing
+ * Created By: Haim Adrian
+ * Final Project for OOP course at Holon Institute of Technology
+ * 2019-2020
+ */
 
 #ifndef POLYNOMIALS_ABOUTDLG_H
 #define POLYNOMIALS_ABOUTDLG_H

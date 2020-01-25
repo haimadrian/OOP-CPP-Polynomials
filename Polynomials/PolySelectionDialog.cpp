@@ -1,5 +1,9 @@
-// PolySelectionDialog.cpp : implementation file
-//
+/*
+ * Polynomials Calculator and Graph Drawing
+ * Created By: Haim Adrian
+ * Final Project for OOP course at Holon Institute of Technology
+ * 2019-2020
+ */
 
 #include "framework.h"
 #include "Polynomials.h"
@@ -13,7 +17,7 @@
 IMPLEMENT_DYNAMIC(PolySelectionDialog, CDialogEx)
 
 PolySelectionDialog::PolySelectionDialog(int low, int high, const std::wstring & action, CWnd* pParent /*=nullptr*/)
-	: leftPolyIndex(low),rightPolyIndex(low),low(low),high(high), isWindowVisible(false), action(action), CDialogEx(IDD_SELECT_POLY, pParent)
+	: leftPolyIndex(low),rightPolyIndex(low),low(low),high(high), isWindowVisible(false), action(action), CDialogEx(IDD_SELECT_POLY_DIALOG, pParent)
 {
 }
 

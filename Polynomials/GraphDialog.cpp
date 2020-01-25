@@ -1,5 +1,9 @@
-// GraphDialog.cpp : implementation file
-//
+/*
+ * Polynomials Calculator and Graph Drawing
+ * Created By: Haim Adrian
+ * Final Project for OOP course at Holon Institute of Technology
+ * 2019-2020
+ */
 
 #include <vector>
 #include <sstream>

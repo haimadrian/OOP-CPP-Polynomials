@@ -1,19 +1,21 @@
+/*
+ * Polynomials Calculator and Graph Drawing
+ * Created By: Haim Adrian
+ * Final Project for OOP course at Holon Institute of Technology
+ * 2019-2020
+ */
+
 //{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ generated include file.
 // Used by Polynomials.rc
 //
 #define IDD_ABOUTBOX                    100
-#define IDS_ABOUTBOX                    101
 #define IDD_POLYNOMIALS_DIALOG          102
 #define IDI_MAIN_ICON                   129
-#define IDR_MENU2                       133
 #define IDR_MAIN_MENU                   133
-#define IDR_ACCELERATOR1                135
 #define IDR_ACCELERATOR_FOR_MENU        135
-#define IDD_SELECT_POLY                 136
 #define IDD_SELECT_POLY_DIALOG          136
 #define IDD_CALCULATE_DIALOG            138
-#define IDD_DIALOG1                     140
 #define IDD_GRAPH_DIALOG                140
 #define IDC_PolynomialsList             1000
 #define IDC_POLYNOMIALS_LABEL           1006

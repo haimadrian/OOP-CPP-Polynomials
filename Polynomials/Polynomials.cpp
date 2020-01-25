@@ -1,12 +1,9 @@
-
-// Polynomials.cpp : Defines the class behaviors for the application.
-//
-
-#if defined NDEBUG
-//#define TRACE( format, ... )
-#else
-//#define TRACE( format, ... )   printf( "%s::%s(%d)" format, __FILE__, __FUNCTION__,  __LINE__, __VA_ARGS__ )
-#endif
+/*
+ * Polynomials Calculator and Graph Drawing
+ * Created By: Haim Adrian
+ * Final Project for OOP course at Holon Institute of Technology
+ * 2019-2020
+ */
 
 #include "framework.h"
 #include "Polynomials.h"
