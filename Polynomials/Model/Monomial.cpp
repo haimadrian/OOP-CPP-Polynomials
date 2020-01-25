@@ -4,8 +4,8 @@
 
 #include <stdexcept>
 #include "Monomial.h"
-#include "..\\Utils\\StringUtils.h"
-#include "..\\Utils\\PolynomialUtils.h"
+#include "../Utils/StringUtils.h"
+#include "../Utils/PolynomialUtils.h"
 #include <cmath>
 
 int Monomial::monomialObjectsCount = 0;
@@ -158,16 +158,16 @@ void Monomial::write(std::ostream & out) const {
 	if ((coeff != 1) || (deg == 0)) {
 		out << coeff;
 
-		if (deg > 0) {
+		if (deg != 0) {
 			out << "*";
 		}
 	}
 
 	// Handle degree part
-	if (deg > 0) {
+	if (deg != 0) {
 		out << "x";
 
-		if (deg > 1) {
+		if (deg != 1) {
 			out << "^" << deg;
 		}
 	}
@@ -226,13 +226,32 @@ void Monomial::read(std::istream & in) {
 			if (StringUtils::peekIgnoringWhitespace(in) == std::char_traits<char>::to_int_type('^')) {
 				in.get(); // Drop the '^' to get to the degree
 
-				if (!isdigit(StringUtils::peekIgnoringWhitespace(in))) {
+				if ((!isdigit(tempChar = StringUtils::peekIgnoringWhitespace(in))) &&
+					(tempChar != std::char_traits<char>::to_int_type('-')) &&
+					(tempChar != std::char_traits<char>::to_int_type('+'))) {
 					throw std::invalid_argument((std::string("Failed to parse input text. Unexpected character after '^':   '") +
-						((char)StringUtils::peekIgnoringWhitespace(in) == '\n' ? "END" : ("" + (char)StringUtils::peekIgnoringWhitespace(in))) + 
-						'\''));
+						((char)tempChar == '\n' ? "END" : ("" + (char)tempChar)) + '\''));
+				}
+
+				sign = 1;
+
+				// If there is a sign, remove it to make sure there is a digit after the sign.
+				if ((tempChar == std::char_traits<char>::to_int_type('-')) || (tempChar == std::char_traits<char>::to_int_type('+'))) {
+					in.get();
+
+					// Before we override the sign, keep it
+					if (tempChar == std::char_traits<char>::to_int_type('-')) {
+						sign = -1;
+					}
+
+					if (!isdigit(tempChar = StringUtils::peekIgnoringWhitespace(in))) {
+						throw std::invalid_argument((std::string("Failed to parse input text. Unexpected character after ^sign:   '") +
+							((char)tempChar == '\n' ? "END" : ("" + (char)tempChar)) + '\''));
+					}
 				}
 
 				in >> this->degree;
+				this->degree *= sign;
 			}
 			else {
 				if (StringUtils::peekIgnoringWhitespace(in) == std::char_traits<char>::to_int_type('.')) {

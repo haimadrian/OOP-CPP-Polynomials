@@ -4,8 +4,8 @@
 
 #include <iostream>
 #include "Polynomial.h"
-#include "..\\Utils\\StringUtils.h"
-#include "..\\Utils\\PolynomialUtils.h"
+#include "../Utils/StringUtils.h"
+#include "../Utils/PolynomialUtils.h"
 
 static const char POLY_INPUT_END = ',';
 
@@ -110,6 +110,62 @@ void Polynomial::clear() {
     }
 
     head = nullptr;
+}
+
+int Polynomial::getMaxEffectiveDegree() {
+	int result = 1;
+
+	if ((head != nullptr) && (head->monomial != nullptr)) {
+		MonomNode *iter = head;
+		
+		while (iter != nullptr) {
+			if (iter->monomial->getCoefficient() != 0) {
+				result = iter->monomial->getDegree();
+				break;
+			}
+
+			iter = iter->next;
+		}
+	}
+
+	return result;
+}
+
+int Polynomial::getMinEffectiveDegree() {
+	int result = 1;
+
+	if ((head != nullptr) && (head->monomial != nullptr)) {
+		MonomNode *iter = head;
+
+		// Get last effective degree. This is the minimum
+		while (iter != nullptr) {
+			if (iter->monomial->getCoefficient() != 0) {
+				result = iter->monomial->getDegree();
+			}
+
+			iter = iter->next;
+		}
+	}
+
+	return result;
+}
+
+int Polynomial::getEffectiveCount() {
+	int length = 0;
+
+	if ((head != nullptr) && (head->monomial != nullptr)) {
+		MonomNode *iter = head;
+
+		while (iter != nullptr) {
+			if (iter->monomial->getDegree() != 0) {
+				length++;
+			}
+
+			iter = iter->next;
+		}
+	}
+
+	return length;
 }
 
 Polynomial &Polynomial::operator+=(const Polynomial &another) {

@@ -6,7 +6,7 @@
 #define POLYNOMIALS_POLYNOMIAL_H
 
 #include "Monomial.h"
-#include "..\\Utils\\IPrintable.h"
+#include "../Utils/IPrintable.h"
 
 class Polynomial : public IPrintable {
 private:
@@ -32,6 +32,12 @@ public:
     ~Polynomial();
     void add(const Monomial & monomial);
     void clear();
+
+	int getMaxEffectiveDegree();
+	int getMinEffectiveDegree();
+
+	// Amount of monomials with degree which is hiegher than 0.
+	int getEffectiveCount(); 
 
     Polynomial& operator+=(const Polynomial &another);
     Polynomial& operator+=(const Monomial &monomial);

@@ -129,6 +129,15 @@
     <ClInclude Include="Actions\CalculateAction.h">
       <Filter>Header Files\Actions</Filter>
     </ClInclude>
+    <ClInclude Include="GraphDialog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Actions\CopyAction.h">
+      <Filter>Header Files\Actions</Filter>
+    </ClInclude>
+    <ClInclude Include="Actions\PasteAction.h">
+      <Filter>Header Files\Actions</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Polynomials.cpp">
@@ -195,6 +204,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Actions\CalculateAction.cpp">
+      <Filter>Source Files\Actions</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Actions\CopyAction.cpp">
+      <Filter>Source Files\Actions</Filter>
+    </ClCompile>
+    <ClCompile Include="Actions\PasteAction.cpp">
       <Filter>Source Files\Actions</Filter>
     </ClCompile>
   </ItemGroup>

@@ -8,8 +8,8 @@
 #include <sstream>
 #include "AbstractInputTextKeeperAction.h"
 #include "ActionContext.h"
-#include "..\\Model\\Polynomial.h"
-#include "..\\PolynomialsApplication.h"
+#include "../Model/Polynomial.h"
+#include "../PolynomialsApplication.h"
 
 class EvaluateInputAction : public AbstractInputTextKeeperAction
 {

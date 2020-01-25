@@ -1,8 +1,8 @@
 
 #include "KeyDownAction.h"
-#include "..\\PolynomialsApplication.h" 
-#include "..\\Utils\\StringUtils.h"
-#include "..\\Utils\\PolynomialUtils.h"
+#include "../PolynomialsApplication.h" 
+#include "../Utils/StringUtils.h"
+#include "../Utils/PolynomialUtils.h"
 
 IAction * KeyDownAction::clone()
 {

@@ -4,7 +4,7 @@
 #ifndef POLYNOMIALS_POLYNOMIALSAPPLICATION_H
 #define POLYNOMIALS_POLYNOMIALSAPPLICATION_H
 
-#include "Actions\\ActionExecutor.h"
+#include "Actions/ActionExecutor.h"
 #include "framework.h"
 #include "PolynomialsDlg.h"
 

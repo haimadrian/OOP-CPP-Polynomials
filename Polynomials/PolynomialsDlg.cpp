@@ -10,11 +10,13 @@
 #include "AboutDlg.h"
 #include "afxdialogex.h"
 #include "PolynomialsApplication.h"
-#include "Actions\\ActionContext.h"
-#include "Actions\\AbstractInputTextKeeperAction.h"
-#include "Utils\\StringUtils.h"
+#include "Actions/ActionContext.h"
+#include "Actions/AbstractInputTextKeeperAction.h"
+#include "Actions/AbstractArithmeticAction.h"
+#include "Utils/StringUtils.h"
 #include "PolySelectionDialog.h"
 #include "CalculationDialog.h"
+#include "GraphDialog.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -250,6 +252,12 @@ void CPolynomialsDlg::handleShortcut(int key) {
 	else if (key == ('s' - 'a' + 1)) {
 		OnFileSave();
 	}
+	else if (key == ('c' - 'a' + 1)) {
+		OnEditCopy();
+	}
+	else if (key == ('v' - 'a' + 1)) {
+		OnEditPaste();
+	}
 }
 
 
@@ -440,6 +448,30 @@ void CPolynomialsDlg::OnFileQuit() {
 	SendMessage(WM_CLOSE);
 }
 
+void CPolynomialsDlg::OnEditCopy() {
+	try {
+		PolynomialsApplication::getInstance().getActionExecutor()->execute(Action::Copy);
+	}
+	catch (ExecuteActionException & e) {
+		showExceptionMessageToUser(e);
+	}
+	catch (...) {
+		showGeneralErrorToUser();
+	}
+}
+
+void CPolynomialsDlg::OnEditPaste() {
+	try {
+		PolynomialsApplication::getInstance().getActionExecutor()->execute(Action::Paste);
+	}
+	catch (ExecuteActionException & e) {
+		showExceptionMessageToUser(e);
+	}
+	catch (...) {
+		showGeneralErrorToUser();
+	}
+}
+
 void CPolynomialsDlg::OnEditUndo() {
 	try {
 		if (PolynomialsApplication::getInstance().getActionExecutor()->canUndo()) {
@@ -605,7 +637,6 @@ void CPolynomialsDlg::OnEditCalculate() {
 		else {
 			AfxMessageBox(L"Please select a polynomial first.", MB_ICONINFORMATION | MB_OK);
 		}
-		
 	}
 	catch (...) {
 		showGeneralErrorToUser();
@@ -614,7 +645,16 @@ void CPolynomialsDlg::OnEditCalculate() {
 
 void CPolynomialsDlg::OnEditGraph() {
 	try {
+		CListCtrl * list = (CListCtrl *)GetDlgItem(IDC_PolynomialsList);
+		int selectedIndex = list->GetSelectionMark();
 
+		if (selectedIndex >= 0) {
+			GraphDialog dlg(AbstractArithmeticAction::buildPolynomialFromList(selectedIndex), this);
+			dlg.DoModal();
+		}
+		else {
+			AfxMessageBox(L"Please select a polynomial first.", MB_ICONINFORMATION | MB_OK);
+		}
 	}
 	catch (...) {
 		showGeneralErrorToUser();
@@ -877,7 +917,7 @@ void CPolynomialsDlg::OnBnClickedMfcbuttonclear()
 void CPolynomialsDlg::OnBnClickedMfcbuttoneq()
 {
 	try {
-		PolynomialsApplication::getInstance().getActionExecutor()->execute(Action::Evaluate, ActionContext());
+		PolynomialsApplication::getInstance().getActionExecutor()->execute(Action::Evaluate);
 	}
 	catch (ExecuteActionException & e) {
 		showExceptionMessageToUser(e);
@@ -891,7 +931,7 @@ void CPolynomialsDlg::OnBnClickedMfcbuttoneq()
 void CPolynomialsDlg::OnBnClickedMfcbuttoninsert()
 {
 	try {
-		PolynomialsApplication::getInstance().getActionExecutor()->execute(Action::InsertPoly, ActionContext());
+		PolynomialsApplication::getInstance().getActionExecutor()->execute(Action::InsertPoly);
 		setUnsavedChangesState();
 	}
 	catch (ExecuteActionException & e) {

@@ -1,7 +1,7 @@
 
 #include "CalculateAction.h"
 #include "AbstractArithmeticAction.h"
-#include "..\\Model\\Polynomial.h"
+#include "../Model/Polynomial.h"
 #include <iomanip>
 #include <sstream>
 
@@ -20,23 +20,19 @@ std::string doubleToString(double value) {
 	return outStr.str();
 }
 
-std::wstring doubleToWString(double value) {
-	std::wostringstream outStr;
-
-	// Set Fixed-Point Notation
-	// Set precision to 2 digits
-	outStr << std::fixed << std::setprecision(2) << value;
-
-	return outStr.str();
-}
-
 void CalculateAction::execute(const ActionContext & context) {
 	try {
 		Polynomial poly = AbstractArithmeticAction::buildPolynomialFromList(context.getSelectedPolyIndex());
 		double result = poly(context.getXValue());
 
-		PolynomialsApplication::getInstance().getMainWindow()->logMessage(
-			L"Calculation Result: " + doubleToWString(result));
+		std::ostringstream out;
+		out << "Calculation result for: (" << poly << ") with x=" << context.getXValue() << " is: "
+			<< std::fixed << std::setprecision(2) << result;
+
+		std::string str = out.str();
+		std::wstring wstr(str.begin(), str.end());
+
+		PolynomialsApplication::getInstance().getMainWindow()->logMessage(wstr);
 	}
 	catch (...) {
 		throw ExecuteActionException(std::string("Failed to calculate value for x=") + doubleToString(context.getXValue()));

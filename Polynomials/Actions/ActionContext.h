@@ -3,7 +3,7 @@
 #ifndef POLYNOMIALS_ACTIONCONTEXT_H
 #define POLYNOMIALS_ACTIONCONTEXT_H
 
-#include "..\\framework.h"
+#include "../framework.h"
 #include <string>
 
 class ActionContext

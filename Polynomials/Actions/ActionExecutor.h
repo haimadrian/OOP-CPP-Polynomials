@@ -9,7 +9,7 @@
 #include "ActionContext.h"
 #include "ExecuteActionException.h"
 
-enum Action { Add, Calculate, Div, Evaluate, InsertPoly, KeyDown, Mul, Open, RemovePoly, Save, Sub };
+enum Action { Add, Calculate, Copy, Div, Evaluate, InsertPoly, KeyDown, Mul, Open, Paste, RemovePoly, Save, Sub };
 
 class ActionFactory {
 public:
@@ -32,7 +32,7 @@ public:
 	ActionExecutor(ActionExecutor & another);
 	ActionExecutor & operator=(ActionExecutor & another);
 	~ActionExecutor();
-	void execute(Action actionType, ActionContext & context) throw(ExecuteActionException);
+	void execute(Action actionType, ActionContext & context = ActionContext()) throw(ExecuteActionException);
 	void undo();
 	void redo();
 	bool canUndo() const;

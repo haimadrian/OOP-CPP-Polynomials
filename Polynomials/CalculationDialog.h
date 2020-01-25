@@ -1,5 +1,9 @@
 #pragma once
 
+
+#ifndef POLYNOMIALS_CALCULATIONDLG_H
+#define POLYNOMIALS_CALCULATIONDLG_H
+
 #include "framework.h"
 #include <string>
 
@@ -29,3 +33,5 @@ protected:
 public:
 	afx_msg void OnEnChangeEditxvalue();
 };
+
+#endif

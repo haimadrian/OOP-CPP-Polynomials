@@ -52,6 +52,8 @@ protected:
 	void OnFileOpen();
 	void OnFileSave();
 	void OnFileQuit();
+	void OnEditCopy();
+	void OnEditPaste();
 	void OnEditUndo();
 	void OnEditRedo();
 	void OnEditAdd();

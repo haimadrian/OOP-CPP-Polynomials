@@ -1,6 +1,6 @@
 
 #include "RemovePolyAction.h"
-#include "..\\PolynomialsApplication.h"
+#include "../PolynomialsApplication.h"
 
 IAction * RemovePolyAction::clone()
 {

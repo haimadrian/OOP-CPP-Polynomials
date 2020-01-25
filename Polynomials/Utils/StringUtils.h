@@ -7,7 +7,7 @@
 
 #include <iostream>
 #include <cctype>
-#include "..\\framework.h"
+#include "../framework.h"
 
 class StringUtils {
 public:

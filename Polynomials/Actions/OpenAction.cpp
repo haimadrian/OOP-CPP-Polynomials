@@ -1,7 +1,7 @@
 
 #include "OpenAction.h"
-#include "..\\PolynomialsApplication.h"
-#include "..\\Utils\\StringUtils.h"
+#include "../PolynomialsApplication.h"
+#include "../Utils/StringUtils.h"
 #include <fstream>
 #include <sstream>
 

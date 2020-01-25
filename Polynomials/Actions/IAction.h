@@ -8,10 +8,10 @@
 #include "ExecuteActionException.h"
 
 // So all actions will have reference to these
-#include "..\\framework.h" 
-#include "..\\Model\\Polynomial.h"
-#include "..\\Model\\Monomial.h"
-#include "..\\Utils\\ICloneable.h"
+#include "../framework.h" 
+#include "../Model/Polynomial.h"
+#include "../Model/Monomial.h"
+#include "../Utils/ICloneable.h"
 
 class ActionExecutor;
 

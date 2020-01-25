@@ -12,8 +12,9 @@
 #define IDR_ACCELERATOR_FOR_MENU        135
 #define IDD_SELECT_POLY                 136
 #define IDD_SELECT_POLY_DIALOG          136
-#define IDD_DIALOG1                     138
 #define IDD_CALCULATE_DIALOG            138
+#define IDD_DIALOG1                     140
+#define IDD_GRAPH_DIALOG                140
 #define IDC_PolynomialsList             1000
 #define IDC_POLYNOMIALS_LABEL           1006
 #define IDC_INPUT_TEXT                  1007
@@ -66,7 +67,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        140
+#define _APS_NEXT_RESOURCE_VALUE        142
 #define _APS_NEXT_COMMAND_VALUE         32796
 #define _APS_NEXT_CONTROL_VALUE         1043
 #define _APS_NEXT_SYMED_VALUE           101

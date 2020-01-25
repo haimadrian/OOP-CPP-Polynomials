@@ -6,7 +6,7 @@
 #define POLYNOMIALS_MONOMIAL_H
 
 #include <iostream>
-#include "..\\Utils\\IPrintable.h"
+#include "../Utils/IPrintable.h"
 
 class Monomial : public IPrintable {
 private:

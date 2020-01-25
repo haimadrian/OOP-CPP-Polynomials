@@ -3,12 +3,14 @@
 #include "ActionExecutor.h"
 #include "AddAction.h"
 #include "CalculateAction.h"
+#include "CopyAction.h"
 #include "DivAction.h"
 #include "EvaluateInputAction.h"
 #include "InsertPolyAction.h"
 #include "KeyDownAction.h"
 #include "MulAction.h"
 #include "OpenAction.h"
+#include "PasteAction.h"
 #include "RemovePolyAction.h"
 #include "SaveAction.h"
 #include "SubAction.h"
@@ -96,8 +98,16 @@ void ActionExecutor::execute(Action actionType, ActionContext & context) throw(E
 		throw ExecuteActionException("Cannot execute action. Unknown Action: " + actionType);
 	}
 
-	// In case it fails, an exception will be thrown before pushing it.
-	action->execute(context); 
+	try {
+		// In case it fails, an exception will be thrown before pushing it.
+		action->execute(context);
+	} catch (std::exception &) {
+		delete action;
+		throw;
+	} catch (const std::exception &) {
+		delete action;
+		throw;
+	}
 
 	// In case it is an edit action, keep it in the stack.
 	if (dynamic_cast<IEditAction*>(action) != nullptr) {
@@ -106,6 +116,10 @@ void ActionExecutor::execute(Action actionType, ActionContext & context) throw(E
 		// When we execute an action, we override the undone action, because a new action is now in the stack.
 		// So here we clear undone actions such that there will be nothing to redo when a new action is executed.
 		clearUndoneActions();
+	}
+	else {
+		// Free the action as we do not keep a reference to it anymore
+		delete action;
 	}
 }
 
@@ -143,12 +157,14 @@ IAction * ActionFactory::createAction(Action actionType) {
 	switch (actionType) {
 		case Add: action = new AddAction(); break;
 		case Calculate: action = new CalculateAction(); break;
+		case Copy: action = new CopyAction(); break;
 		case Div: action = new DivAction(); break;
 		case Evaluate: action = new EvaluateInputAction(); break;
 		case InsertPoly: action = new InsertPolyAction(); break;
 		case KeyDown: action = new KeyDownAction(); break;
 		case Mul: action = new MulAction(); break;
-		case Open: action = new OpenAction(); break;
+		case Open: action = new OpenAction(); break; 
+		case Paste: action = new PasteAction(); break;
 		case RemovePoly:  action = new RemovePolyAction(); break;
 		case Save: action = new SaveAction(); break;
 		case Sub: action = new SubAction(); break;
