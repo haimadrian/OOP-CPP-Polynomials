@@ -318,6 +318,11 @@ BOOL CPolynomialsDlg::PreTranslateMessage(MSG* pMsg)
 				OnBnClickedMfcbuttoneq();
 				return TRUE;
 			}
+			else if (pMsg->wParam == VK_ESCAPE)
+			{
+				OnFileQuit();
+				return TRUE;
+			}
 
 			// Do not redirect event if sender is the console or list control, to let user copy text.
 			if (pMsg->hwnd != GetDlgItem(IDC_CONSOLE)->GetSafeHwnd())
