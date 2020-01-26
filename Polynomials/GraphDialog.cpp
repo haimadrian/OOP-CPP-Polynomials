@@ -50,6 +50,8 @@ BOOL GraphDialog::OnInitDialog()
 
 	SetWindowText(wstr.c_str());
 
+	SetDefID(IDCONTINUE);
+
 	return TRUE;
 }
 
@@ -225,7 +227,7 @@ void GraphDialog::paintTableArea(CPaintDC & dc)
 
 	UINT txtParams = DT_VCENTER | DT_SINGLELINE | DS_CENTER | TRANSPARENT;
 	RECT xPos;
-	xPos.top = middleVertical - 30;
+	xPos.top = middleVertical - 29;
 	xPos.left = xEnd + 5;
 	xPos.right = xPos.left + 50;
 	xPos.bottom = xPos.top + 50;
