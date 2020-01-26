@@ -17,7 +17,8 @@
 class InsertPolyAction : public EvaluateInputAction
 {
 private:
-	int itemIndex;
+	int itemIndex, prevSelection;
+	void doExecute();
 protected:
 	IAction * clone();
 

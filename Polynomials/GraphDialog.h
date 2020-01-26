@@ -20,8 +20,10 @@ class GraphDialog : public CDialogEx
 	DECLARE_DYNAMIC(GraphDialog)
 private:
 	Polynomial polynomial;
+	double xPerY, yPerX;
 	void paintTableArea(CPaintDC & dc);
 	void paintFunction(CPaintDC & dc);
+	bool doMouseWheel(int control, double & value, short zDelta, CPoint & pt, bool checkRegion = true);
 public:
 	GraphDialog(Polynomial & polynomial, CWnd* pParent = nullptr);
 	virtual ~GraphDialog();
@@ -38,6 +40,9 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnPaint();
+	afx_msg void OnEnChangeEditxspery();
+	afx_msg void OnEnChangeEditysperx();
+	afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
 };
 
 #endif

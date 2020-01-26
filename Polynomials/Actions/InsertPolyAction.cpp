@@ -11,8 +11,27 @@ IAction * InsertPolyAction::clone()
 {
 	InsertPolyAction * result = new InsertPolyAction();
 	clonePartial(result);
-	result->itemIndex = this->itemIndex;
+	result->itemIndex = this->itemIndex; 
+	result->prevSelection = this->prevSelection;
 	return result;
+}
+
+void InsertPolyAction::doExecute()
+{
+	CListCtrl * list = PolynomialsApplication::getInstance().getPolyListControl();
+	list->InsertItem(itemIndex, getWholeText(PolynomialsApplication::getInstance().getInputTextControl()));
+
+	if (prevSelection >= 0)
+	{
+		list->SetItemState(prevSelection, ~LVIS_SELECTED, LVIS_SELECTED);
+	}
+
+	list->SetItemState(itemIndex, LVIS_SELECTED, LVIS_SELECTED);
+	list->SetSelectionMark(itemIndex);
+
+	// Refresh the width. We do this in case there is a vertical scrollbar created, that adds some 
+	// pixels to the width of the list, which results in a horizontal scrollbar.
+	list->SetColumnWidth(0, LVSCW_AUTOSIZE_USEHEADER);
 }
 
 void InsertPolyAction::execute(const ActionContext & context)
@@ -23,12 +42,10 @@ void InsertPolyAction::execute(const ActionContext & context)
 	CListCtrl * list = PolynomialsApplication::getInstance().getPolyListControl();
 	CEdit * input = PolynomialsApplication::getInstance().getInputTextControl();
 
+	prevSelection = list->GetSelectionMark();
 	itemIndex = list->GetItemCount();
-	list->InsertItem(itemIndex, getWholeText(input));
 
-	// Refresh the width. We do this in case there is a vertical scrollbar created, that adds some 
-	// pixels to the width of the list, which results in a horizontal scrollbar.
-	list->SetColumnWidth(0, LVSCW_AUTOSIZE_USEHEADER);
+	doExecute();
 
 	PolynomialsApplication::getInstance().getMainWindow()->logMessageWithInputText(L"Inserted polynomial: ");
 }
@@ -36,7 +53,16 @@ void InsertPolyAction::execute(const ActionContext & context)
 void InsertPolyAction::undo()
 {
 	CListCtrl * list = PolynomialsApplication::getInstance().getPolyListControl();
+
+	int currSelection = list->GetSelectionMark();
+
 	list->DeleteItem(itemIndex);
+
+	if ((currSelection == itemIndex) && (prevSelection >= 0))
+	{
+		list->SetItemState(prevSelection, LVIS_SELECTED, LVIS_SELECTED);
+		list->SetSelectionMark(prevSelection);
+	}
 
 	// Refresh the width. We do this in case there is a vertical scrollbar created, that adds some 
 	// pixels to the width of the list, which results in a horizontal scrollbar.
@@ -51,12 +77,7 @@ void InsertPolyAction::redo()
 {
 	EvaluateInputAction::redo();
 
-	CListCtrl * list = PolynomialsApplication::getInstance().getPolyListControl();
-	list->InsertItem(itemIndex, getWholeText(PolynomialsApplication::getInstance().getInputTextControl()));
-
-	// Refresh the width. We do this in case there is a vertical scrollbar created, that adds some 
-	// pixels to the width of the list, which results in a horizontal scrollbar.
-	list->SetColumnWidth(0, LVSCW_AUTOSIZE_USEHEADER);
+	doExecute();
 
 	PolynomialsApplication::getInstance().getMainWindow()->logMessageWithInputText(L"Redo of InsertPolynomialAction: ");
 }

@@ -8,6 +8,7 @@
 #include <vector>
 #include <sstream>
 #include <string>
+#include <iomanip>
 #include "framework.h"
 #include "Polynomials.h"
 #include "GraphDialog.h"
@@ -36,7 +37,21 @@ void GraphDialog::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(GraphDialog, CDialogEx)
 	ON_WM_PAINT()
+	ON_EN_CHANGE(IDC_EDITXsPerY, &GraphDialog::OnEnChangeEditxspery)
+	ON_EN_CHANGE(IDC_EDITYsPerX, &GraphDialog::OnEnChangeEditysperx)
+	ON_WM_MOUSEWHEEL()
 END_MESSAGE_MAP()
+
+std::wstring doubleToString(double value)
+{
+	std::wostringstream outStr;
+
+	// Set Fixed-Point Notation
+	// Set precision to 1 digit
+	outStr << std::fixed << std::setprecision(1) << value;
+
+	return outStr.str();
+}
 
 
 // GraphDialog message handlers
@@ -52,6 +67,19 @@ BOOL GraphDialog::OnInitDialog()
 
 	SetDefID(IDCONTINUE);
 
+	double maxDeg = polynomial.getMaxEffectiveDegree();
+	xPerY = yPerX = 1;
+
+	// In order to display a beutiful graph, normalize the function value
+	if (((maxDeg < 0) || (maxDeg > 1)) && (polynomial.getEffectiveCount() == 1))
+	{
+		xPerY = ((maxDeg != 1) && (maxDeg != 2)) ? 30.0 : 10.0;
+	}
+
+	SetDlgItemText(IDC_EDITXsPerY, doubleToString(xPerY).c_str());
+	SetDlgItemText(IDC_EDITYsPerX, doubleToString(yPerX).c_str());
+
+
 	return TRUE;
 }
 
@@ -63,7 +91,7 @@ void GraphDialog::OnPaint()
 	GetClientRect(&windowRect);
 
 	CBrush brush;
-	brush.CreateSolidBrush((COLORREF)RGB(255, 255, 255));
+	brush.CreateSolidBrush(PALETTERGB(255, 255, 255));
 	dc.FillRect(&windowRect, &brush);
 
 	paintTableArea(dc);
@@ -88,26 +116,19 @@ void GraphDialog::paintFunction(CPaintDC & dc)
 
 	double maxDeg = polynomial.getMaxEffectiveDegree();
 	double minDeg = polynomial.getMinEffectiveDegree();
-	double divideBy = 1;
-
-	// In order to display a beutiful graph, normalize the function value
-	if (((maxDeg < 0) || (maxDeg > 1)) && (polynomial.getEffectiveCount() == 1))
-	{
-		divideBy = ((maxDeg != 1) && (maxDeg != 2)) ? 30.0 : 10.0;
-	}
 
 	// Run over axis
 	for (int i = 0; i < windowRect.right; i++)
 	{
 		// Here we normalize the value of x in order to draw a more easier to see graph.
-		double x = ((double)i - middleHorizontal) / divideBy;
+		double x = ((double)i - middleHorizontal) / xPerY;
 
 		// Be careful not to divide by zero.
 		// When we get to divide by zero, start filling in the other vector such that we will have
 		// two lines with a vertical asymptote
 		if ((minDeg >= 0) || (fabs(x) > 0.1))
 		{
-			funcValue = polynomial(x);
+			funcValue = polynomial(x) / yPerX;
 
 			if (abs(funcValue) < SHORT_MAX)
 			{
@@ -120,7 +141,6 @@ void GraphDialog::paintFunction(CPaintDC & dc)
 					// Define the "infinity" point of the line we are about to fill.
 					if (!isFirstOptionalMarked)
 					{
-						x = ((double)i + 10 - middleHorizontal) / divideBy;
 						optionalActualPoints.push_back(CPoint(i, (funcValue < 0) ? windowRect.bottom : windowRect.top));
 						isFirstOptionalMarked = true;
 					}
@@ -142,8 +162,8 @@ void GraphDialog::paintFunction(CPaintDC & dc)
 	}
 
 	CPen pen;
-	pen.CreatePen(PS_SOLID, 2, (COLORREF)RGB(255, 0, 0));
-	dc.SelectObject(&pen);
+	pen.CreatePen(PS_SOLID, 2, PALETTERGB(255, 0, 0));
+	CPen * prevPen = dc.SelectObject(&pen);
 
 	// Copy points to array, so we will pass it to the DC
 	size_t amountOfPoints = actualPoints.size();
@@ -172,6 +192,8 @@ void GraphDialog::paintFunction(CPaintDC & dc)
 	{
 		dc.Polyline(points, (int)amountOfPoints);
 	}
+
+	dc.SelectObject(prevPen);
 
 	delete points;
 }
@@ -215,15 +237,19 @@ void GraphDialog::paintTableArea(CPaintDC & dc)
 	points[i++] = CPoint(middleHorizontal + arrowLength, yStart + arrowLength);
 
 	CPen pen;
-	pen.CreatePen(PS_SOLID, 7, (COLORREF)RGB(0, 0, 255));
-	dc.SelectObject(&pen);
+	pen.CreatePen(PS_SOLID, 7, PALETTERGB(0, 0, 255));
+	CPen * prevPen = dc.SelectObject(&pen);
+
+	CBrush backgroundBrush;
+	backgroundBrush.CreateSolidBrush(PALETTERGB(255, 255, 255));
+	CBrush * prevBrush = dc.SelectObject(&backgroundBrush);
 
 	dc.PolyPolyline(points, linesLength, amountOfLines);
 
 	CFont font;
 	font.CreateFontW(50, 20, 0, 0, FW_BOLD, FALSE, FALSE, FALSE, ANSI_CHARSET,
-					 OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, L"Microsoft Sans Serif");
-	dc.SelectObject(&font);
+					 OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, NONANTIALIASED_QUALITY, DEFAULT_PITCH, L"Microsoft Sans Serif");
+	CFont *prevFont = dc.SelectObject(&font);
 
 	UINT txtParams = DT_VCENTER | DT_SINGLELINE | DS_CENTER | TRANSPARENT;
 	RECT xPos;
@@ -239,4 +265,126 @@ void GraphDialog::paintTableArea(CPaintDC & dc)
 	yPos.right = yPos.left + 50;
 	yPos.bottom = yPos.top + 50;
 	dc.DrawTextW(L"y", &yPos, txtParams);
+
+	// Return prev values
+	dc.SelectObject(prevPen);
+	dc.SelectObject(prevBrush);
+	dc.SelectObject(prevFont);
+}
+
+void GraphDialog::OnEnChangeEditxspery()
+{
+	try
+	{
+		double temp;
+		CString val;
+		GetDlgItemText(IDC_EDITXsPerY, val);
+		std::wstring wstr(val.GetString());
+
+		if (!wstr.empty())
+		{
+			temp = atof(std::string(wstr.begin(), wstr.end()).c_str());
+			if (abs(temp) < 0.1)
+			{
+				AfxMessageBox(L"Illegal input. Value cannot be less than 0.1.", MB_ICONERROR | MB_OK);
+				SetDlgItemText(IDC_EDITXsPerY, doubleToString(xPerY).c_str());
+			}
+			else
+			{
+				xPerY = temp;
+
+				// Repaint the graph
+				Invalidate(TRUE);
+			}
+		}
+	}
+	catch (...)
+	{
+		AfxMessageBox(L"Illegal input. Only numbers are accepted.", MB_ICONERROR | MB_OK);
+		SetDlgItemText(IDC_EDITXsPerY, doubleToString(xPerY).c_str());
+	}
+}
+
+
+void GraphDialog::OnEnChangeEditysperx()
+{
+	try
+	{
+		double temp;
+		CString val;
+		GetDlgItemText(IDC_EDITYsPerX, val);
+		std::wstring wstr(val.GetString());
+
+		if (!wstr.empty())
+		{
+			temp = atof(std::string(wstr.begin(), wstr.end()).c_str());
+			if (abs(temp) < 0.1)
+			{
+				AfxMessageBox(L"Illegal input. Value cannot be less than 0.1.", MB_ICONERROR | MB_OK);
+				SetDlgItemText(IDC_EDITYsPerX, doubleToString(yPerX).c_str());
+			}
+			else
+			{
+				yPerX = temp;
+
+				// Repaint the graph
+				Invalidate(TRUE);
+			}
+		}
+	}
+	catch (...)
+	{
+		AfxMessageBox(L"Illegal input. Only numbers are accepted.", MB_ICONERROR | MB_OK);
+		SetDlgItemText(IDC_EDITYsPerX, doubleToString(yPerX).c_str());
+	}
+}
+
+bool GraphDialog::doMouseWheel(int control, double & value, short zDelta, CPoint & pt, bool checkRegion)
+{
+	CRect rect;
+	CWnd *edit = GetDlgItem(control);
+	edit->GetWindowRect(&rect);
+
+	if (!checkRegion || ((pt.x >= rect.left) && (pt.x <= rect.right) && (pt.y >= rect.top) && (pt.y <= rect.bottom)))
+	{
+		// delta is in x120, so divide it to get 1
+		value += (zDelta / 120);
+		if (abs(value) < 0.1)
+		{
+			// bypass 0
+			value = zDelta < 0 ? -1 : 1;
+		}
+
+		SetDlgItemText(control, doubleToString(value).c_str());
+
+		// Repaint the graph
+		Invalidate(TRUE);
+
+		return true;
+	}
+
+	return false;
+}
+
+BOOL GraphDialog::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
+{
+	CRect rect;
+	CWnd *edit = GetDlgItem(IDC_EDITXsPerY);
+	edit->GetWindowRect(&rect);
+
+	if (doMouseWheel(IDC_EDITXsPerY, xPerY, zDelta, pt))
+	{
+		return TRUE;
+	}
+	else if (doMouseWheel(IDC_EDITYsPerX, yPerX, zDelta, pt))
+	{
+		return TRUE;
+	}
+	else
+	{
+		// By default, treat it as it above x edit, with no region validation.
+		doMouseWheel(IDC_EDITXsPerY, xPerY, zDelta, pt, false);
+	}
+
+	return CDialogEx::OnMouseWheel(nFlags, zDelta, pt);
 }

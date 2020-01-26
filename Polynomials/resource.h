@@ -1,14 +1,7 @@
-/*
- * Polynomials Calculator and Graph Drawing
- * Created By: Haim Adrian
- * Final Project for OOP course at Holon Institute of Technology
- * 2019-2020
- */
-
- //{{NO_DEPENDENCIES}}
- // Microsoft Visual C++ generated include file.
- // Used by Polynomials.rc
- //
+//{{NO_DEPENDENCIES}}
+// Microsoft Visual C++ generated include file.
+// Used by Polynomials.rc
+//
 #define IDD_ABOUTBOX                    100
 #define IDD_POLYNOMIALS_DIALOG          102
 #define IDI_MAIN_ICON                   129
@@ -48,6 +41,9 @@
 #define IDC_SPINLEFTPOLY                1041
 #define IDC_SPINRIGHTPOLY               1042
 #define IDC_EDITXVALUE                  1042
+#define IDC_EDITXsPerY                  1043
+#define IDC_EDITYsPerX                  1044
+#define IDC_SPINRIGHTPOLY2              1045
 #define ID_FILE_OPEN32771               32771
 #define ID_FILE_SAVE32772               32772
 #define ID_FILE_QUIT                    32773
@@ -73,7 +69,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        142
 #define _APS_NEXT_COMMAND_VALUE         32799
-#define _APS_NEXT_CONTROL_VALUE         1043
+#define _APS_NEXT_CONTROL_VALUE         1044
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
