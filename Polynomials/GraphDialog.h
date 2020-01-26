@@ -23,6 +23,7 @@ private:
 	double xPerY, yPerX;
 	void paintTableArea(CPaintDC & dc);
 	void paintFunction(CPaintDC & dc);
+	void doEditChanged(int control, double & value);
 	bool doMouseWheel(int control, double & value, short zDelta, CPoint & pt, bool checkRegion = true);
 public:
 	GraphDialog(Polynomial & polynomial, CWnd* pParent = nullptr);

@@ -272,13 +272,13 @@ void GraphDialog::paintTableArea(CPaintDC & dc)
 	dc.SelectObject(prevFont);
 }
 
-void GraphDialog::OnEnChangeEditxspery()
+void GraphDialog::doEditChanged(int control, double & value)
 {
 	try
 	{
 		double temp;
 		CString val;
-		GetDlgItemText(IDC_EDITXsPerY, val);
+		GetDlgItemText(control, val);
 		std::wstring wstr(val.GetString());
 
 		if (!wstr.empty())
@@ -287,11 +287,11 @@ void GraphDialog::OnEnChangeEditxspery()
 			if (abs(temp) < 0.1)
 			{
 				AfxMessageBox(L"Illegal input. Value cannot be less than 0.1.", MB_ICONERROR | MB_OK);
-				SetDlgItemText(IDC_EDITXsPerY, doubleToString(xPerY).c_str());
+				SetDlgItemText(control, doubleToString(value).c_str());
 			}
 			else
 			{
-				xPerY = temp;
+				value = temp;
 
 				// Repaint the graph
 				Invalidate(TRUE);
@@ -301,42 +301,19 @@ void GraphDialog::OnEnChangeEditxspery()
 	catch (...)
 	{
 		AfxMessageBox(L"Illegal input. Only numbers are accepted.", MB_ICONERROR | MB_OK);
-		SetDlgItemText(IDC_EDITXsPerY, doubleToString(xPerY).c_str());
+		SetDlgItemText(control, doubleToString(value).c_str());
 	}
+}
+
+void GraphDialog::OnEnChangeEditxspery()
+{
+	doEditChanged(IDC_EDITXsPerY, xPerY);
 }
 
 
 void GraphDialog::OnEnChangeEditysperx()
 {
-	try
-	{
-		double temp;
-		CString val;
-		GetDlgItemText(IDC_EDITYsPerX, val);
-		std::wstring wstr(val.GetString());
-
-		if (!wstr.empty())
-		{
-			temp = atof(std::string(wstr.begin(), wstr.end()).c_str());
-			if (abs(temp) < 0.1)
-			{
-				AfxMessageBox(L"Illegal input. Value cannot be less than 0.1.", MB_ICONERROR | MB_OK);
-				SetDlgItemText(IDC_EDITYsPerX, doubleToString(yPerX).c_str());
-			}
-			else
-			{
-				yPerX = temp;
-
-				// Repaint the graph
-				Invalidate(TRUE);
-			}
-		}
-	}
-	catch (...)
-	{
-		AfxMessageBox(L"Illegal input. Only numbers are accepted.", MB_ICONERROR | MB_OK);
-		SetDlgItemText(IDC_EDITYsPerX, doubleToString(yPerX).c_str());
-	}
+	doEditChanged(IDC_EDITYsPerX, yPerX);
 }
 
 bool GraphDialog::doMouseWheel(int control, double & value, short zDelta, CPoint & pt, bool checkRegion)
@@ -347,8 +324,9 @@ bool GraphDialog::doMouseWheel(int control, double & value, short zDelta, CPoint
 
 	if (!checkRegion || ((pt.x >= rect.left) && (pt.x <= rect.right) && (pt.y >= rect.top) && (pt.y <= rect.bottom)))
 	{
-		// delta is in x120, so divide it to get 1
-		value += (zDelta / 120);
+		// Delta is not consistant between touchpad of laptop and mouse wheel.
+		// Just take +/- 1
+		value += ((zDelta >= 0) ? 1 : -1);
 		if (abs(value) < 0.1)
 		{
 			// bypass 0
@@ -372,6 +350,7 @@ BOOL GraphDialog::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 	CWnd *edit = GetDlgItem(IDC_EDITXsPerY);
 	edit->GetWindowRect(&rect);
 
+	TRACE(zDelta);
 	if (doMouseWheel(IDC_EDITXsPerY, xPerY, zDelta, pt))
 	{
 		return TRUE;
