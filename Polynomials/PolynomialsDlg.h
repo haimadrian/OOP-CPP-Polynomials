@@ -44,6 +44,7 @@ private:
 	void freeLayoutManager();
 	bool canExecuteArithmeticAction();
 	void handleShortcut(int key);
+	void handleTxtButtonClicked(int key);
 
 	// Implementation
 protected:

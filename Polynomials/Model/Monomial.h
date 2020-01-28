@@ -58,6 +58,21 @@ public:
 
 	bool operator==(const Monomial &another) const;
 	bool operator!=(const Monomial &another) const;
+
+	static bool isOperator(int character)
+	{
+		switch (character)
+		{
+			case '+':
+			case '-':
+			case '*':
+			case '/':
+			case '^':
+				return true;
+		}
+
+		return false;
+	}
 };
 
 

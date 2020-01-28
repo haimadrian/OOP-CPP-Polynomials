@@ -6,8 +6,9 @@
  */
 
 #include "CalculateAction.h"
-#include "AbstractArithmeticAction.h"
+#include "../Utils/PolynomialUtils.h"
 #include "../Model/Polynomial.h"
+#include "../PolynomialsApplication.h"
 #include <iomanip>
 #include <sstream>
 
@@ -31,7 +32,7 @@ void CalculateAction::execute(const ActionContext & context)
 {
 	try
 	{
-		Polynomial poly = AbstractArithmeticAction::buildPolynomialFromList(context.getSelectedPolyIndex());
+		Polynomial poly = PolynomialUtils::buildPolynomialFromList(context.getSelectedPolyIndex());
 		double result = poly(context.getXValue());
 
 		std::ostringstream out;

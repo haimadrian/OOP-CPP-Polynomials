@@ -13,11 +13,10 @@
 
 #include "IAction.h"
 #include "ActionContext.h"
+#include "../Utils/PolynomialUtils.h"
 
 class AbstractInputTextKeeperAction : public IEditAction
 {
-private:
-	static const int INPUT_MAX_LEN = 1024;
 protected:
 	// Keeps action context to use when undoing/redoing a command.
 	ActionContext actionContext;
@@ -27,12 +26,22 @@ protected:
 
 	void keepSelectedText(CEdit * inputEdit)
 	{
-		text = AbstractInputTextKeeperAction::getSelectedText(inputEdit);
+		text = PolynomialUtils::getSelectedText(inputEdit);
 	}
 
 	void keepWholeText(CEdit * inputEdit)
 	{
-		text = AbstractInputTextKeeperAction::getWholeText(inputEdit);
+		text = PolynomialUtils::getWholeText(inputEdit);
+	}
+
+	WCHAR * getSelectedText(CEdit * inputEdit)
+	{
+		return PolynomialUtils::getSelectedText(inputEdit);
+	}
+
+	WCHAR * getWholeText(CEdit * inputEdit)
+	{
+		return PolynomialUtils::getWholeText(inputEdit);
 	}
 
 	void clonePartial(AbstractInputTextKeeperAction * to)
@@ -60,42 +69,6 @@ public:
 	void execute(const ActionContext & context) throw(ExecuteActionException)
 	{
 		actionContext = context;
-	}
-
-	static WCHAR * getSelectedText(CEdit * inputEdit)
-	{
-		// Get text from edit control
-		WCHAR * tempText = new WCHAR[INPUT_MAX_LEN] { 0 };
-		inputEdit->GetLine(0, tempText, INPUT_MAX_LEN);
-
-		int begin, end;
-		inputEdit->GetSel(begin, end);
-
-		// Copy selected text and then free the temporary reference.
-		WCHAR * txt = new WCHAR[end - begin + 1] { 0 };
-		for (int i = begin; i < end; i++)
-		{
-			txt[i - begin] = tempText[i];
-		}
-
-		delete tempText;
-		return txt;
-	}
-
-	static WCHAR * getWholeText(CEdit * inputEdit)
-	{
-		// Get text from edit control
-		WCHAR * tempText = new WCHAR[INPUT_MAX_LEN] { 0 };
-		int length = inputEdit->GetLine(0, tempText, INPUT_MAX_LEN);
-
-		WCHAR * txt = new WCHAR[length + 1] { 0 };
-		for (int i = 0; i < length; i++)
-		{
-			txt[i] = tempText[i];
-		}
-
-		delete tempText;
-		return txt;
 	}
 };
 

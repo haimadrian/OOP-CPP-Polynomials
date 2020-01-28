@@ -8,17 +8,13 @@
 #include <stdexcept>
 #include "Monomial.h"
 #include "../Utils/StringUtils.h"
-#include "../Utils/PolynomialUtils.h"
 #include <cmath>
 
 int Monomial::monomialObjectsCount = 0;
 
 static void validatePositiveDegree(int degree)
 {
-	// As we support division, a degree can be negative.
-	//if (degree < 0) {
-	//    std::cerr << "Warn: A negative degree has been received: " << degree << std::endl;
-	//}
+	
 }
 
 Monomial::Monomial(double coefficient, int degree) :coefficient(coefficient), degree(degree)
@@ -132,12 +128,30 @@ Monomial Monomial::operator/(const Monomial &another) const
 
 Monomial &Monomial::operator^=(const Monomial &another)
 {
-	if (another.getDegree() > 0)
+	if (another.getCoefficient() == 0)
+	{
+		this->degree = 0; 
+		this->coefficient = 1;
+	} 
+	else if (another.getDegree() != 0)
 	{
 		throw std::overflow_error("Overflow Error: Cannot power by x, only by a number.");
 	}
 
-	this->coefficient = pow(this->coefficient, another.coefficient);
+	if (another.getCoefficient() < 0)
+	{
+		*this = Monomial(1) / (*this ^ Monomial(abs(another.getCoefficient()))); // x^-2 = 1/x^2
+	}
+	else
+	{
+		// In order to affect coefficient and degree of this monomial, and not just the coefficient, do the power in a loop
+		Monomial copy(*this);
+		for (int i = 1; i < another.getCoefficient(); i++)
+		{
+			*this *= copy;
+		}
+	}
+
 	return *this;
 }
 
@@ -256,7 +270,7 @@ void Monomial::read(std::istream & in)
 	this->coefficient *= sign;
 
 	// Make sure it is not an operator. Operators are handled at the Polynomial level.
-	if ((!PolynomialUtils::isOperator(StringUtils::peekIgnoringWhitespace(in))) ||
+	if ((!isOperator(StringUtils::peekIgnoringWhitespace(in))) ||
 		(StringUtils::peekIgnoringWhitespace(in) == std::char_traits<char>::to_int_type('*')))
 	{
 		if (StringUtils::peekIgnoringWhitespace(in) == std::char_traits<char>::to_int_type('*'))

@@ -14,8 +14,7 @@
 #include "afxdialogex.h"
 #include "PolynomialsApplication.h"
 #include "Actions/ActionContext.h"
-#include "Actions/AbstractInputTextKeeperAction.h"
-#include "Actions/AbstractArithmeticAction.h"
+#include "Utils/PolynomialUtils.h"
 #include "Utils/StringUtils.h"
 #include "PolySelectionDialog.h"
 #include "CalculationDialog.h"
@@ -221,7 +220,7 @@ void CPolynomialsDlg::logMessage(const std::wstring & message)
 void CPolynomialsDlg::logMessageWithInputText(const std::wstring & message)
 {
 	CEdit * edit = (CEdit *)GetDlgItem(IDC_INPUT_TEXT);
-	WCHAR * txt = AbstractInputTextKeeperAction::getWholeText(edit);
+	WCHAR * txt = PolynomialUtils::getWholeText(edit);
 	logMessage(message + std::wstring(txt));
 	delete txt;
 }
@@ -334,6 +333,7 @@ BOOL CPolynomialsDlg::PreTranslateMessage(MSG* pMsg)
 					// for some reason.. Handle it manually here.
 					if (GetAsyncKeyState(VK_CONTROL))
 					{
+						// Fix the key according to accelerator, so we will be able to use the same handleShortcut method
 						handleShortcut(tolower((int)pMsg->wParam) - 'a' + 1);
 					}
 					else
@@ -771,7 +771,7 @@ void CPolynomialsDlg::OnEditGraph()
 
 		if (selectedIndex >= 0)
 		{
-			GraphDialog dlg(AbstractArithmeticAction::buildPolynomialFromList(selectedIndex), this);
+			GraphDialog dlg(PolynomialUtils::buildPolynomialFromList(selectedIndex), this);
 			dlg.DoModal();
 		}
 		else
@@ -846,183 +846,121 @@ void CPolynomialsDlg::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
 
 
 // ####################### Calculator buttons ############
-void CPolynomialsDlg::OnBnClickedMfcbuttonx()
+
+void CPolynomialsDlg::handleTxtButtonClicked(int key)
 {
 	MSG msg;
 	msg.hwnd = GetSafeHwnd();
 	msg.message = WM_KEYDOWN;
-	msg.wParam = 'x';
+	msg.wParam = key;
 	PreTranslateMessage(&msg);
+}
+
+void CPolynomialsDlg::OnBnClickedMfcbuttonx()
+{
+	handleTxtButtonClicked('x');
 }
 
 
 void CPolynomialsDlg::OnBnClickedMfcbutton0()
 {
-	MSG msg;
-	msg.hwnd = GetSafeHwnd();
-	msg.message = WM_KEYDOWN;
-	msg.wParam = '0';
-	PreTranslateMessage(&msg);
+	handleTxtButtonClicked('0');
 }
 
 
 void CPolynomialsDlg::OnBnClickedMfcbutton1()
 {
-	MSG msg;
-	msg.hwnd = GetSafeHwnd();
-	msg.message = WM_KEYDOWN;
-	msg.wParam = '1';
-	PreTranslateMessage(&msg);
+	handleTxtButtonClicked('1');
 }
 
 
 void CPolynomialsDlg::OnBnClickedMfcbutton2()
 {
-	MSG msg;
-	msg.hwnd = GetSafeHwnd();
-	msg.message = WM_KEYDOWN;
-	msg.wParam = '2';
-	PreTranslateMessage(&msg);
+	handleTxtButtonClicked('2');
 }
 
 
 void CPolynomialsDlg::OnBnClickedMfcbutton3()
 {
-	MSG msg;
-	msg.hwnd = GetSafeHwnd();
-	msg.message = WM_KEYDOWN;
-	msg.wParam = '3';
-	PreTranslateMessage(&msg);
+	handleTxtButtonClicked('3');
 }
 
 
 void CPolynomialsDlg::OnBnClickedMfcbutton4()
 {
-	MSG msg;
-	msg.hwnd = GetSafeHwnd();
-	msg.message = WM_KEYDOWN;
-	msg.wParam = '4';
-	PreTranslateMessage(&msg);
+	handleTxtButtonClicked('4');
 }
 
 
 void CPolynomialsDlg::OnBnClickedMfcbutton5()
 {
-	MSG msg;
-	msg.hwnd = GetSafeHwnd();
-	msg.message = WM_KEYDOWN;
-	msg.wParam = '5';
-	PreTranslateMessage(&msg);
+	handleTxtButtonClicked('5');
 }
 
 
 void CPolynomialsDlg::OnBnClickedMfcbutton6()
 {
-	MSG msg;
-	msg.hwnd = GetSafeHwnd();
-	msg.message = WM_KEYDOWN;
-	msg.wParam = '6';
-	PreTranslateMessage(&msg);
+	handleTxtButtonClicked('6');
 }
 
 
 void CPolynomialsDlg::OnBnClickedMfcbutton7()
 {
-	MSG msg;
-	msg.hwnd = GetSafeHwnd();
-	msg.message = WM_KEYDOWN;
-	msg.wParam = '7';
-	PreTranslateMessage(&msg);
+	handleTxtButtonClicked('7');
 }
 
 
 void CPolynomialsDlg::OnBnClickedMfcbutton8()
 {
-	MSG msg;
-	msg.hwnd = GetSafeHwnd();
-	msg.message = WM_KEYDOWN;
-	msg.wParam = '8';
-	PreTranslateMessage(&msg);
+	handleTxtButtonClicked('8');
 }
 
 
 void CPolynomialsDlg::OnBnClickedMfcbutton9()
 {
-	MSG msg;
-	msg.hwnd = GetSafeHwnd();
-	msg.message = WM_KEYDOWN;
-	msg.wParam = '9';
-	PreTranslateMessage(&msg);
+	handleTxtButtonClicked('9');
 }
 
 
 void CPolynomialsDlg::OnBnClickedMfcbuttonadd()
 {
-	MSG msg;
-	msg.hwnd = GetSafeHwnd();
-	msg.message = WM_KEYDOWN;
-	msg.wParam = '+';
-	PreTranslateMessage(&msg);
+	handleTxtButtonClicked('+');
 }
 
 
 void CPolynomialsDlg::OnBnClickedMfcbuttonsub()
 {
-	MSG msg;
-	msg.hwnd = GetSafeHwnd();
-	msg.message = WM_KEYDOWN;
-	msg.wParam = '-';
-	PreTranslateMessage(&msg);
+	handleTxtButtonClicked('-');
 }
 
 
 void CPolynomialsDlg::OnBnClickedMfcbuttonmul()
 {
-	MSG msg;
-	msg.hwnd = GetSafeHwnd();
-	msg.message = WM_KEYDOWN;
-	msg.wParam = '*';
-	PreTranslateMessage(&msg);
+	handleTxtButtonClicked('*');
 }
 
 
 void CPolynomialsDlg::OnBnClickedMfcbuttondiv()
 {
-	MSG msg;
-	msg.hwnd = GetSafeHwnd();
-	msg.message = WM_KEYDOWN;
-	msg.wParam = '/';
-	PreTranslateMessage(&msg);
+	handleTxtButtonClicked('/');
 }
 
 
 void CPolynomialsDlg::OnBnClickedMfcbuttonpow()
 {
-	MSG msg;
-	msg.hwnd = GetSafeHwnd();
-	msg.message = WM_KEYDOWN;
-	msg.wParam = '^';
-	PreTranslateMessage(&msg);
+	handleTxtButtonClicked('^');
 }
 
 
 void CPolynomialsDlg::OnBnClickedMfcbuttondot()
 {
-	MSG msg;
-	msg.hwnd = GetSafeHwnd();
-	msg.message = WM_KEYDOWN;
-	msg.wParam = VK_DECIMAL;
-	PreTranslateMessage(&msg);
+	handleTxtButtonClicked(VK_DECIMAL);
 }
 
 
 void CPolynomialsDlg::OnBnClickedMfcbuttondel()
 {
-	MSG msg;
-	msg.hwnd = GetSafeHwnd();
-	msg.message = WM_KEYDOWN;
-	msg.wParam = VK_DELETE;
-	PreTranslateMessage(&msg);
+	handleTxtButtonClicked(VK_DELETE);
 }
 
 

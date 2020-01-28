@@ -7,6 +7,7 @@
 
 #include <ostream>
 #include "EvaluateInputAction.h"
+#include "../Utils/PolynomialUtils.h"
 
 IAction * EvaluateInputAction::clone()
 {
@@ -19,7 +20,7 @@ void EvaluateInputAction::doExecute(CEdit * input)
 {
 	try
 	{
-		Polynomial p = EvaluateInputAction::buildPolynomialFromInputText();
+		Polynomial p = PolynomialUtils::buildPolynomialFromInputText();
 		std::ostringstream out;
 		out << p;
 

@@ -8,7 +8,6 @@
 #include <iostream>
 #include "Polynomial.h"
 #include "../Utils/StringUtils.h"
-#include "../Utils/PolynomialUtils.h"
 
 static const char POLY_INPUT_END = ',';
 
@@ -567,7 +566,7 @@ void Polynomial::read(std::istream & in)
 		in >> inputMonomial;
 		(*this) += inputMonomial;
 
-		if (PolynomialUtils::isOperator(StringUtils::peekIgnoringWhitespace(in)))
+		if (Monomial::isOperator(StringUtils::peekIgnoringWhitespace(in)))
 		{
 			int operatorChar = StringUtils::getIgnoringWhitespace(in);
 

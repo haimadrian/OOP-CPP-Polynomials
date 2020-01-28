@@ -6,7 +6,8 @@
  */
 
 #include "SaveAction.h"
-#include "AbstractArithmeticAction.h"
+#include "../Utils/PolynomialUtils.h"
+#include "../PolynomialsApplication.h"
 #include <fstream>
 
 IAction * SaveAction::clone()
@@ -25,7 +26,7 @@ void SaveAction::execute(const ActionContext & context)
 		int count = list->GetItemCount();
 		for (int i = 0; i < count; i++)
 		{
-			Polynomial p = AbstractArithmeticAction::buildPolynomialFromList(i);
+			Polynomial p = PolynomialUtils::buildPolynomialFromList(i);
 			f << p << std::endl;
 		}
 

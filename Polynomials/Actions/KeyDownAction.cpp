@@ -28,7 +28,7 @@ void KeyDownAction::executeBasedOnExistingData(CEdit * inputEdit)
 	if ((virtualKey != VK_BACK) && (virtualKey != VK_DELETE))
 	{
 		// Make sure it is a digit or acceptable sign
-		if (isdigit(ascii) || PolynomialUtils::isOperator(ascii) || (tolower(ascii) == 'x') || (ascii == ' ') || (ascii == '.'))
+		if (isdigit(ascii) || Monomial::isOperator(ascii) || (tolower(ascii) == 'x') || (ascii == ' ') || (ascii == '.'))
 		{
 			text = new WCHAR[2] { (WCHAR)tolower(ascii), '\0' };
 

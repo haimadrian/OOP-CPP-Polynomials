@@ -284,10 +284,10 @@ void GraphDialog::doEditChanged(int control, double & value)
 		if (!wstr.empty())
 		{
 			temp = atof(std::string(wstr.begin(), wstr.end()).c_str());
-			if (abs(temp) < 0.1)
+			if (temp < 0.1)
 			{
-				AfxMessageBox(L"Illegal input. Value cannot be less than 0.1.", MB_ICONERROR | MB_OK);
 				SetDlgItemText(control, doubleToString(value).c_str());
+				AfxMessageBox(L"Illegal input. Value cannot be less than 0.1.", MB_ICONERROR | MB_OK);
 			}
 			else
 			{
@@ -300,8 +300,8 @@ void GraphDialog::doEditChanged(int control, double & value)
 	}
 	catch (...)
 	{
-		AfxMessageBox(L"Illegal input. Only numbers are accepted.", MB_ICONERROR | MB_OK);
 		SetDlgItemText(control, doubleToString(value).c_str());
+		AfxMessageBox(L"Illegal input. Only numbers are accepted.", MB_ICONERROR | MB_OK);
 	}
 }
 
@@ -327,10 +327,10 @@ bool GraphDialog::doMouseWheel(int control, double & value, short zDelta, CPoint
 		// Delta is not consistant between touchpad of laptop and mouse wheel.
 		// Just take +/- 1
 		value += ((zDelta >= 0) ? 1 : -1);
-		if (abs(value) < 0.1)
+		if (value < 0.1)
 		{
-			// bypass 0
-			value = zDelta < 0 ? -1 : 1;
+			// Value cannot be 0 or negative.
+			value = 0.1;
 		}
 
 		SetDlgItemText(control, doubleToString(value).c_str());

@@ -7,11 +7,12 @@
 
 #include <ostream>
 #include "AbstractArithmeticAction.h"
+#include "../Utils/PolynomialUtils.h"
 
 void AbstractArithmeticAction::logArithmeticActionMessage(bool isRedo)
 {
-	Polynomial leftPoly = AbstractArithmeticAction::buildPolynomialFromList(actionContext.getSelectedPolyIndex());
-	Polynomial rightPoly = AbstractArithmeticAction::buildPolynomialFromList(actionContext.getSelectedPolyIndex2());
+	Polynomial leftPoly = PolynomialUtils::buildPolynomialFromList(actionContext.getSelectedPolyIndex());
+	Polynomial rightPoly = PolynomialUtils::buildPolynomialFromList(actionContext.getSelectedPolyIndex2());
 
 	std::ostringstream out;
 	out << '(' << leftPoly << ')' << ' ' << getActionOperator() << ' ' << '(' << rightPoly << ')';
